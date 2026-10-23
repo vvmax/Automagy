@@ -1,0 +1,24 @@
+{
+  "classes": 439,
+  "java_files": 409,
+  "resources_unchanged": 241,
+  "mapped_srg_members": 816,
+  "unmapped_srg_members": [
+    "field_147501_a",
+    "field_147558_l",
+    "field_147560_j",
+    "field_147561_k",
+    "field_70532_c",
+    "func_145881_a",
+    "func_147945_b",
+    "func_150108_b",
+    "func_152777_a",
+    "func_92110_g",
+    "func_94530_a"
+  ],
+  "string_literals_preserved": true,
+  "member_references_verified": true,
+  "top_level_source_coverage": "100%",
+  "decompiler_failure_markers": 0,
+  "validation_scope": "Archive integrity, mapped members, literals, source coverage; see logs/syntax.log for syntax. No full typecheck or game run."
+}

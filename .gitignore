@@ -1,0 +1,15 @@
+# Downloaded original mod dependencies and generated decompilation output.
+/input/
+/build/
+/*.jar
+/*.zip
+
+# Compiled tools and Python cache.
+*.class
+__pycache__/
+*.pyc
+
+# Local IDE state.
+.idea/
+*.iml
+.vscode/

@@ -1,0 +1,6 @@
+* text=auto eol=lf
+
+# These files are preserved byte-for-byte and covered by recorded hashes.
+/mappings/** -text -whitespace
+/src/main/resources/** -text -whitespace
+*.jar binary

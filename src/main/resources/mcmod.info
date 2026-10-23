@@ -1,0 +1,17 @@
+[
+{
+  "modid": "Automagy",
+  "name": "Automagy",
+  "description": "An addon for Thaumcraft 4 focused on providing flexible and interesting tools for automation and logistics, plus a few other fun thaumic gadgets.",
+  "version": "1.7.10-0.28.2",
+  "mcversion": "1.7.10",
+  "url": "",
+  "updateUrl": "",
+  "authors": ["Tuhljin"],
+  "authorList":  ["Tuhljin (programming, art)", "Draanor (art)"],
+  "credits": "Special thanks and much credit go to Azanor.",
+  "logoFile": "automagyLogo256.png",
+  "screenshots": [],
+  "dependencies": ["Thaumcraft"]
+}
+]
