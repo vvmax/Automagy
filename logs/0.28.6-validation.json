@@ -1,0 +1,723 @@
+{
+  "release": "0.28.6",
+  "previous_release_commit": "42802d83c4e3b975ecf11ad0079b5c09b3c74915",
+  "tests": 126,
+  "failures": 0,
+  "errors": 0,
+  "previous_regression_tests": 88,
+  "additional_regression_tests": 38,
+  "artifact": {
+    "file": "Automagy-1.7.10-0.28.6.jar",
+    "sha256": "29a958c270a7f705a403d48d03d4aad9d4d56f649906ccabf9c30bcf09ed02fd",
+    "original_sha256": "4c1d78e0adee1754675d93ffbadc8c9fe205710cb77538b953e57810f9528efc",
+    "classes": 440,
+    "unchanged_classes": 411,
+    "unchanged_resources": 241,
+    "changed_entries": [
+      "tuhljin/automagy/blocks/BlockMirrorMultiDest.class",
+      "tuhljin/automagy/blocks/BlockThaumostaticRefuelerSpire.class",
+      "tuhljin/automagy/entities/EntityAvaricePearl$EntitySelectorItem.class",
+      "tuhljin/automagy/entities/EntityAvaricePearl.class",
+      "tuhljin/automagy/entities/EntityItemDelayedFall.class",
+      "tuhljin/automagy/gui/ContainerAutoHandMirror.class",
+      "tuhljin/automagy/gui/ContainerPortableArcaneCrafting.class",
+      "tuhljin/automagy/gui/FakeTileMagicWorkbench.class",
+      "tuhljin/automagy/items/ItemBucketCustom.class",
+      "tuhljin/automagy/items/ItemNetherHeart.class",
+      "tuhljin/automagy/lib/TjUtil.class",
+      "tuhljin/automagy/lib/events/AutomagyEventHandler.class",
+      "tuhljin/automagy/lib/inventory/MappedItemsOrderedByTimeAdded.class",
+      "tuhljin/automagy/lib/inventory/MappedItemsWithGroupedCounts.class",
+      "tuhljin/automagy/lib/inventory/MirrorspaceItems.class",
+      "tuhljin/automagy/network/MessageGUIInventariumRequest.class",
+      "tuhljin/automagy/network/MessageKeyPressed.class",
+      "tuhljin/automagy/tiles/TileEntityEssentiaLocus.class",
+      "tuhljin/automagy/tiles/TileEntityGolemWorkbench$EntitySelectorCraftingGolem.class",
+      "tuhljin/automagy/tiles/TileEntityGolemWorkbench.class",
+      "tuhljin/automagy/tiles/TileEntityInventarium$PairedContentsProvider.class",
+      "tuhljin/automagy/tiles/TileEntityInventarium.class",
+      "tuhljin/automagy/tiles/TileEntityMirrorMultiDest.class",
+      "tuhljin/automagy/tiles/TileEntitySpecialProcess.class",
+      "tuhljin/automagy/tiles/TileEntityThaumostaticController.class",
+      "tuhljin/automagy/tiles/TileEntityThirstyTank$SourceLiquidResult.class",
+      "tuhljin/automagy/tiles/TileEntityThirstyTank.class",
+      "tuhljin/automagy/tiles/TileEntityVisReader.class"
+    ],
+    "added_entries": [
+      "tuhljin/automagy/lib/DeferredItemDrops.class"
+    ],
+    "java_class_version": 52,
+    "srg_names_verified": true,
+    "server_dispenser_constructor_present": true,
+    "external_dreamcraft_dependency": false
+  },
+  "changed_since_0.28.5": [
+    "tuhljin/automagy/entities/EntityItemDelayedFall.class",
+    "tuhljin/automagy/gui/ContainerPortableArcaneCrafting.class",
+    "tuhljin/automagy/lib/TjUtil.class",
+    "tuhljin/automagy/lib/events/AutomagyEventHandler.class",
+    "tuhljin/automagy/tiles/TileEntityGolemWorkbench$EntitySelectorCraftingGolem.class",
+    "tuhljin/automagy/tiles/TileEntityGolemWorkbench.class",
+    "tuhljin/automagy/tiles/TileEntityInventarium$PairedContentsProvider.class",
+    "tuhljin/automagy/tiles/TileEntityInventarium.class",
+    "tuhljin/automagy/tiles/TileEntitySpecialProcess.class",
+    "tuhljin/automagy/tiles/TileEntityThaumostaticController.class",
+    "tuhljin/automagy/tiles/TileEntityThirstyTank$SourceLiquidResult.class",
+    "tuhljin/automagy/tiles/TileEntityThirstyTank.class"
+  ],
+  "unchanged_classes_since_0.28.5": 427,
+  "baseline_0.28.5": [
+    {
+      "suite": "tuhljin.automagy.audit.AuditFixesTest",
+      "tests": 8,
+      "failures": 8,
+      "failed_cases": [
+        {
+          "name": "cancelledHoverConversionKeepsOriginalStack",
+          "message": "java.lang.AssertionError"
+        },
+        {
+          "name": "workbenchReplacementSlotFromNbtIsNormalized",
+          "message": "java.lang.reflect.InvocationTargetException"
+        },
+        {
+          "name": "thirstTankCannotCreditFluidAfterFailedSourceRemoval",
+          "message": "java.lang.AssertionError: expected:<0> but was:<1000>"
+        },
+        {
+          "name": "orphanInventariumCannotDropForeignBlock",
+          "message": "java.lang.AssertionError: expected:<1> but was:<0>"
+        },
+        {
+          "name": "orphanedMawConversionCannotRepeatCompletedOutput",
+          "message": "java.lang.AssertionError: expected:<0> but was:<6>"
+        },
+        {
+          "name": "controllerCannotRefundRelocatedUpperAtSavedHeight",
+          "message": "java.lang.AssertionError: expected:<0> but was:<18>"
+        },
+        {
+          "name": "dropHelperTransfersRejectedStackToPersistentQueue",
+          "message": "java.lang.AssertionError: expected:<37> but was:<0>"
+        },
+        {
+          "name": "negativeWorkbenchRecipeIndexIsNormalized",
+          "message": "java.lang.AssertionError: expected:<0> but was:<-1>"
+        }
+      ]
+    }
+  ],
+  "baseline_setup": [
+    "All preexisting audited behavior loaded from the 0.28.5 source commit.",
+    "The new DeferredItemDrops class and event-handler tick method are retained solely so the complete test sources compile; the selected baseline suite does not invoke the tick method.",
+    "Two type-only build adaptations: cast the raw player list and use FluidStack.getFluid() with the current Forge API."
+  ],
+  "suites": [
+    {
+      "suite": "tuhljin.automagy.audit.AuditFixesTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "cases": [
+        {
+          "name": "cancelledHoverConversionKeepsOriginalStack",
+          "seconds": 0.183
+        },
+        {
+          "name": "workbenchReplacementSlotFromNbtIsNormalized",
+          "seconds": 0.005
+        },
+        {
+          "name": "thirstTankCannotCreditFluidAfterFailedSourceRemoval",
+          "seconds": 0.049
+        },
+        {
+          "name": "orphanInventariumCannotDropForeignBlock",
+          "seconds": 0.006
+        },
+        {
+          "name": "orphanedMawConversionCannotRepeatCompletedOutput",
+          "seconds": 0.229
+        },
+        {
+          "name": "controllerCannotRefundRelocatedUpperAtSavedHeight",
+          "seconds": 0.098
+        },
+        {
+          "name": "dropHelperTransfersRejectedStackToPersistentQueue",
+          "seconds": 0.003
+        },
+        {
+          "name": "negativeWorkbenchRecipeIndexIsNormalized",
+          "seconds": 0.001
+        }
+      ]
+    },
+    {
+      "suite": "tuhljin.automagy.audit.DeferredDropsTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "cases": [
+        {
+          "name": "repeatedRejectionDoesNotMultiplyQueue",
+          "seconds": 0.025
+        },
+        {
+          "name": "initialHoverDropSurvivesQueueRoundTrip",
+          "seconds": 0.001
+        },
+        {
+          "name": "rejectedDropsSurviveNbtAndDeliverOnceWithTags",
+          "seconds": 0.002
+        },
+        {
+          "name": "partialRejectionConservesAcceptedPlusPendingCounts",
+          "seconds": 0.001
+        },
+        {
+          "name": "worldTickRetriesOnlyAtEndAndOncePerSecond",
+          "seconds": 0.004
+        },
+        {
+          "name": "exceptionDuringRetryDoesNotLosePendingEntry",
+          "seconds": 0.018
+        },
+        {
+          "name": "acceptedDropsPreserveBalanceAndDoNotCreateQueue",
+          "seconds": 0.001
+        },
+        {
+          "name": "unloadedChunkIsNotForcedAndDropRetriesAfterLoading",
+          "seconds": 0.001
+        },
+        {
+          "name": "retriesHaveFiniteBudget",
+          "seconds": 0.014
+        },
+        {
+          "name": "rollbackDropsAreSuppressedWithoutBecomingDeferredDuplicates",
+          "seconds": 0.001
+        },
+        {
+          "name": "reentrantRetryCannotEmitSameEntryAgain",
+          "seconds": 0.002
+        }
+      ]
+    },
+    {
+      "suite": "tuhljin.automagy.audit.NameFilterTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "cases": [
+        {
+          "name": "earliestInteriorMatchLeavesRoomForAnchoredSuffix",
+          "seconds": 0.0
+        },
+        {
+          "name": "adversarialFilterDoesNotBacktrackExponentially",
+          "seconds": 0.004
+        },
+        {
+          "name": "wildcardAndLiteralSemanticsMatchReference",
+          "seconds": 0.041
+        }
+      ]
+    },
+    {
+      "suite": "tuhljin.automagy.audit.OperationControlsTest",
+      "tests": 16,
+      "failures": 0,
+      "errors": 0,
+      "cases": [
+        {
+          "name": "unsupportedInventariumDropsItsOwnBlockOnlyAfterRemovalOnce",
+          "seconds": 0.076
+        },
+        {
+          "name": "ordinaryProcessReturnsEachPaidMawOnceDespiteReentrantTick",
+          "seconds": 0.005
+        },
+        {
+          "name": "failedCoreRemovalKeepsCoreAndDoesNotDrop",
+          "seconds": 0.002
+        },
+        {
+          "name": "failedObsidianRemovalDoesNotCountAsConsumed",
+          "seconds": 0.001
+        },
+        {
+          "name": "staleCoreCannotUnregisterReplacementCoreLocation",
+          "seconds": 0.002
+        },
+        {
+          "name": "tankCreditsActualDrainAmountInsteadOfSimulatedAmount",
+          "seconds": 0.077
+        },
+        {
+          "name": "ordinaryControllerDeactivationRefundsNineExactlyOnce",
+          "seconds": 0.004
+        },
+        {
+          "name": "validWorkbenchIndicesArePreserved",
+          "seconds": 0.001
+        },
+        {
+          "name": "failedFluidBlockDrainDoesNotCreateFluid",
+          "seconds": 0.001
+        },
+        {
+          "name": "failedProcessRemovalCanRetryWithoutRepeatingRewards",
+          "seconds": 0.002
+        },
+        {
+          "name": "rejectedProcessRewardsAreSavedForLaterDelivery",
+          "seconds": 0.001
+        },
+        {
+          "name": "realForgeClassicDrainCannotCreateFluidWhenItsWorldWriteFails",
+          "seconds": 0.096
+        },
+        {
+          "name": "failedSpireRemovalDoesNotRefundAndRetainsControllerForRetry",
+          "seconds": 0.001
+        },
+        {
+          "name": "successfulObsidianRemovalAndProgressSurviveSaving",
+          "seconds": 0.001
+        },
+        {
+          "name": "tankCreditsSuccessfulVanillaSourceOnce",
+          "seconds": 0.001
+        },
+        {
+          "name": "unchangedSourceCannotBeCreditedEvenWhenDrainReturnsAFluidStack",
+          "seconds": 0.001
+        }
+      ]
+    },
+    {
+      "suite": "tuhljin.automagy.catalog.CatalogVerificationTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "cases": [
+        {
+          "name": "catalog563_hopperConsumptionDuringPearlQueryStillConserves64Items",
+          "seconds": 0.168
+        },
+        {
+          "name": "catalog710_extractBeforeSwitchAlsoConservesBothStoragesAndCursor",
+          "seconds": 0.259
+        },
+        {
+          "name": "catalog142_fourRealHoppersAndSixteenPearlsConserve64Items",
+          "seconds": 0.012
+        },
+        {
+          "name": "catalog514_movedUpperHalvesCannotCreateIngots",
+          "seconds": 0.003
+        },
+        {
+          "name": "catalog710_openingNextContainerBeforeClosingPreviousDoesNotCopyContents",
+          "seconds": 0.001
+        },
+        {
+          "name": "catalog563_dispenserHopperAndPearlsConserve64TaggedItems",
+          "seconds": 0.135
+        },
+        {
+          "name": "catalog514_controlOrdinaryUpperBreakReturnsExactlyNineIngots",
+          "seconds": 0.002
+        },
+        {
+          "name": "catalog710_twentyBidirectionalSwitchesKeepAClosedBalance",
+          "seconds": 0.006
+        },
+        {
+          "name": "catalog514_controlOrdinaryLowerBreakDoesNotDoubleRefund",
+          "seconds": 0.001
+        },
+        {
+          "name": "catalog710_switchBeforeClickCannotDuplicateStoredStack",
+          "seconds": 0.001
+        },
+        {
+          "name": "catalog664_orphanLocusCannotDropOrRemoveForeignBlocks",
+          "seconds": 0.003
+        },
+        {
+          "name": "catalog710_halfStackOnCursorSurvivesSwitchAndTransferToTheOtherFocus",
+          "seconds": 0.001
+        }
+      ]
+    },
+    {
+      "suite": "tuhljin.automagy.catalog.MultiblockLifecycleTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "cases": [
+        {
+          "name": "clientSpireCallbackDoesNotRemoveCompanion",
+          "seconds": 0.003
+        },
+        {
+          "name": "cachedForeignBlockIsNeverUsedForLocusDrops",
+          "seconds": 0.075
+        },
+        {
+          "name": "failedRemovalRetainsEyesAndRetriesWithoutDropping",
+          "seconds": 0.002
+        },
+        {
+          "name": "repeatedUpperCallbackCannotRefundRemovedBaseTwice",
+          "seconds": 0.001
+        },
+        {
+          "name": "spireDoesNotRefundWhenBaseRemovalFails",
+          "seconds": 0.0
+        },
+        {
+          "name": "invalidStructureReturnsBlockAndStoredEyesExactlyOnce",
+          "seconds": 0.001
+        },
+        {
+          "name": "orphanIsStoppedImmediatelyAndReplacementTileIsPreserved",
+          "seconds": 0.001
+        },
+        {
+          "name": "spireDoesNotRemoveAnotherBaseAboveIt",
+          "seconds": 0.001
+        },
+        {
+          "name": "validStructureKeepsUpdatingWithoutDismantling",
+          "seconds": 0.103
+        },
+        {
+          "name": "registeredTileAtForeignBlockCannotRemoveIt",
+          "seconds": 0.001
+        },
+        {
+          "name": "invalidatedTileDoesNotTickEvenIfStillRegistered",
+          "seconds": 0.0
+        }
+      ]
+    },
+    {
+      "suite": "tuhljin.automagy.entities.ArchivedServerFixTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "cases": [
+        {
+          "name": "expiredHoverItemCannotRespawnAfterItsStackWasCollected",
+          "seconds": 0.0
+        },
+        {
+          "name": "dispenserConstructorSurvivesActualServerSideTransformer",
+          "seconds": 0.028
+        }
+      ]
+    },
+    {
+      "suite": "tuhljin.automagy.entities.EntityAvaricePearlTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "cases": [
+        {
+          "name": "partialHopperPickupKeepsOnlyLiveRemainderAndNbt",
+          "seconds": 0.0
+        },
+        {
+          "name": "ongoingMiserPearlRechecksConsumedSnapshot",
+          "seconds": 0.001
+        },
+        {
+          "name": "impactStillTransportsLiveItemsWithoutChangingTheirStack",
+          "seconds": 0.004
+        },
+        {
+          "name": "emptyStacksAndNonItemsAreRejected",
+          "seconds": 0.0
+        },
+        {
+          "name": "ongoingMiserPearlStillStopsAtTenStacks",
+          "seconds": 0.0
+        },
+        {
+          "name": "hopperConsumedStackIsNotAvailableToPearl",
+          "seconds": 0.001
+        },
+        {
+          "name": "impactRechecksItemsConsumedAfterQuery",
+          "seconds": 0.001
+        },
+        {
+          "name": "multiplePearlsCannotReuseHopperConsumedEntity",
+          "seconds": 0.012
+        }
+      ]
+    },
+    {
+      "suite": "tuhljin.automagy.gui.PortableCraftingTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "cases": [
+        {
+          "name": "focusRightClickStillOpensCraftingGui",
+          "seconds": 0.001
+        },
+        {
+          "name": "resultNumberKeyKeepsRequestedHotbarIndex",
+          "seconds": 0.019
+        },
+        {
+          "name": "otherNumberKeysStillSwapItems",
+          "seconds": 0.001
+        },
+        {
+          "name": "replacingWandClosesItsOldSession",
+          "seconds": 0.0
+        },
+        {
+          "name": "replacingFocusClosesItsOldStorageSession",
+          "seconds": 0.0
+        },
+        {
+          "name": "storageClosePreservesCountMetadataAndNbt",
+          "seconds": 0.001
+        },
+        {
+          "name": "numberKeyCannotMoveTheBoundWand",
+          "seconds": 0.0
+        },
+        {
+          "name": "readOnlyWandCannotReceiveDragDistribution",
+          "seconds": 0.001
+        },
+        {
+          "name": "fakeWorkbenchKeepsTheProvidedWorld",
+          "seconds": 0.0
+        },
+        {
+          "name": "malformedClickCannotIndexOutsideTheContainer",
+          "seconds": 0.0
+        },
+        {
+          "name": "closingTwiceReturnsMaterialsOnlyOnce",
+          "seconds": 0.001
+        }
+      ]
+    },
+    {
+      "suite": "tuhljin.automagy.items.BucketProtectionTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "cases": [
+        {
+          "name": "spawnProtectedTargetIsNotChanged",
+          "seconds": 0.064
+        },
+        {
+          "name": "deniedBreakPreventsReplacingAPlant",
+          "seconds": 0.015
+        },
+        {
+          "name": "clientDoesNotChangeBlocksOrFireServerProtectionEvents",
+          "seconds": 0.001
+        },
+        {
+          "name": "canceledPlacementRestoresTheOriginalBlock",
+          "seconds": 0.012
+        },
+        {
+          "name": "permittedPlacementStillWorks",
+          "seconds": 0.002
+        },
+        {
+          "name": "failingPlacementKeepsTheFilledBucket",
+          "seconds": 0.001
+        },
+        {
+          "name": "canceledBucketEventKeepsWorldAndBucket",
+          "seconds": 0.001
+        },
+        {
+          "name": "throwingProtectionListenerRollsBackWithoutDrops",
+          "seconds": 0.001
+        }
+      ]
+    },
+    {
+      "suite": "tuhljin.automagy.items.NetherHeartProtectionTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "cases": [
+        {
+          "name": "deniedTickDoesNotRetryHundredsOfProtectedPlacements",
+          "seconds": 0.125
+        },
+        {
+          "name": "permittedFireStillAppearsAndNotifiesTheWorld",
+          "seconds": 0.002
+        },
+        {
+          "name": "clientAndNestedTransactionsDoNotModifyTheWorld",
+          "seconds": 0.002
+        },
+        {
+          "name": "deferredFireInitializationIsCapturedBeforeTheProtectionEvent",
+          "seconds": 0.002
+        },
+        {
+          "name": "canceledPlacementRestoresAirAndTransactionFlags",
+          "seconds": 0.002
+        },
+        {
+          "name": "deniedSecondaryPositionRollsBackTheWholeChange",
+          "seconds": 0.001
+        },
+        {
+          "name": "failedPlacementDoesNotReportSuccess",
+          "seconds": 0.001
+        },
+        {
+          "name": "canceledMultiPlacementRestoresEveryCapturedBlock",
+          "seconds": 0.002
+        },
+        {
+          "name": "throwingProtectionListenerRollsBackAndRestoresFlags",
+          "seconds": 0.002
+        },
+        {
+          "name": "deniedSpawnAndEditPermissionsPreventIgnition",
+          "seconds": 0.001
+        },
+        {
+          "name": "permittedMultiPlacementKeepsAllCapturedBlocks",
+          "seconds": 0.002
+        }
+      ]
+    },
+    {
+      "suite": "tuhljin.automagy.regression.AuditRegressionTest",
+      "tests": 25,
+      "failures": 0,
+      "errors": 0,
+      "cases": [
+        {
+          "name": "validCancellationStillReachesTheCore",
+          "seconds": 0.176
+        },
+        {
+          "name": "multiDestinationMirrorPersistsRejectedSpillInsteadOfDiscardingIt",
+          "seconds": 0.002
+        },
+        {
+          "name": "permittedSpawnIsReportedAsSuccessful",
+          "seconds": 0.011
+        },
+        {
+          "name": "overflowingRequestDoesNotPartiallyChangeDestinationAccounting",
+          "seconds": 0.001
+        },
+        {
+          "name": "persistedInvalidReaderSettingsAreRepaired",
+          "seconds": 0.002
+        },
+        {
+          "name": "movingMirrorIntoItsOwnInputIsBlocked",
+          "seconds": 0.043
+        },
+        {
+          "name": "invalidNetworkDirectionIsIgnoredAndDoesNotCrashTheTick",
+          "seconds": 0.031
+        },
+        {
+          "name": "unusableOrReadOnlyBookCannotChangeRequests",
+          "seconds": 0.004
+        },
+        {
+          "name": "otherMirrorNumberKeysAndUnprotectedDragSlotsStillWork",
+          "seconds": 0.0
+        },
+        {
+          "name": "unexpectedSelfInputIsReturnedByNormalCloseExactlyOnce",
+          "seconds": 0.001
+        },
+        {
+          "name": "craftingHotkeyAcceptsOnlyHotbarSlotsButStillOpensValidFocus",
+          "seconds": 0.001
+        },
+        {
+          "name": "permittedMirrorSpillDoesNotCreateAPendingCopy",
+          "seconds": 0.0
+        },
+        {
+          "name": "replacingMirrorInvalidatesItsSession",
+          "seconds": 0.0
+        },
+        {
+          "name": "inventariumRejectsRequestWithoutAnOpenBook",
+          "seconds": 0.0
+        },
+        {
+          "name": "mirrorCannotBeMovedByItsNumberKeyOrDirectShiftTransfer",
+          "seconds": 0.0
+        },
+        {
+          "name": "bookCannotAddressAnotherCoreOrAnotherRequester",
+          "seconds": 0.003
+        },
+        {
+          "name": "cancellingAcrossSeveralDestinationsDoesNotInvalidateIterator",
+          "seconds": 0.0
+        },
+        {
+          "name": "unloadedCoreIsNotResolvedByTheRequestHandler",
+          "seconds": 0.001
+        },
+        {
+          "name": "canceledSpawnKeepsTheMirrorBufferAndItsNbt",
+          "seconds": 0.0
+        },
+        {
+          "name": "invalidRequestCountsAndItemsAreRejected",
+          "seconds": 0.0
+        },
+        {
+          "name": "requestCountsSaturateAndCanStillBeCancelledAndSaved",
+          "seconds": 0.0
+        },
+        {
+          "name": "groupedCountsDoNotOverflow",
+          "seconds": 0.0
+        },
+        {
+          "name": "validBookStillRequestsFromItsRemoteCoreAndOwnDestination",
+          "seconds": 0.001
+        },
+        {
+          "name": "removingDestinationRemovesOnlyItsRequestsAcrossAllItems",
+          "seconds": 0.0
+        },
+        {
+          "name": "validReaderSettingsStillWork",
+          "seconds": 0.001
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Headless JVM with real mod/Minecraft/Forge code; world state, spawn results and lifecycle callbacks are modeled.",
+    "FML Loader and particle network wrapper are replaced during the audit suites and restored afterward.",
+    "No live server, claim plugin, Witchery ritual or Thaumic Tinkerer dislocation was run.",
+    "Deferred drop persistence is tested through NBT round trips; an actual server restart was not performed."
+  ]
+}

@@ -9,7 +9,7 @@ from verify import class_info
 
 root = Path(__file__).resolve().parent.parent
 original = root / 'input/Automagy-1.7.10-0.28.2.jar'
-patched = root / 'build/libs/Automagy-1.7.10-0.28.5.jar'
+patched = root / 'build/libs/Automagy-1.7.10-0.28.6.jar'
 expected = {
     'entities/EntityAvaricePearl',
     'entities/EntityAvaricePearl$EntitySelectorItem',
@@ -29,20 +29,31 @@ expected = {
     'lib/inventory/MappedItemsWithGroupedCounts',
     'blocks/BlockThaumostaticRefuelerSpire',
     'tiles/TileEntityEssentiaLocus',
+    'lib/TjUtil',
+    'lib/events/AutomagyEventHandler',
+    'tiles/TileEntityInventarium',
+    'tiles/TileEntityInventarium$PairedContentsProvider',
+    'tiles/TileEntityThaumostaticController',
+    'tiles/TileEntitySpecialProcess',
+    'tiles/TileEntityThirstyTank',
+    'tiles/TileEntityThirstyTank$SourceLiquidResult',
+    'tiles/TileEntityGolemWorkbench',
+    'tiles/TileEntityGolemWorkbench$EntitySelectorCraftingGolem',
 }
 expected = {'tuhljin/automagy/' + name + '.class' for name in expected}
+added = {'tuhljin/automagy/lib/DeferredItemDrops.class'}
 manifest = json.loads((root / 'provenance.json').read_text())
 source_hash = next(entry['sha256'] for entry in manifest['inputs']
                    if entry['path'] == 'input/Automagy-1.7.10-0.28.2.jar')
 assert hashlib.sha256(original.read_bytes()).hexdigest() == source_hash
 with zipfile.ZipFile(original) as before, zipfile.ZipFile(patched) as after:
     entries = {name for name in before.namelist() if not name.endswith('/')}
-    assert entries == {name for name in after.namelist() if not name.endswith('/')}
+    assert entries | added == {name for name in after.namelist() if not name.endswith('/')}
     assert len(after.namelist()) == len(set(after.namelist())), 'Duplicate ZIP entries'
     changed = {name for name in entries if before.read(name) != after.read(name)}
     assert changed == expected, changed
     assert after.testzip() is None
-    for name in changed:
+    for name in changed | added:
         assert struct.unpack_from('>H', after.read(name), 6)[0] == 52, name
     prefix = 'tuhljin/automagy/'
     refs, declarations, _, _ = class_info(after.read(prefix + 'entities/EntityAvaricePearl$EntitySelectorItem.class'))
@@ -67,17 +78,21 @@ with zipfile.ZipFile(original) as before, zipfile.ZipFile(patched) as after:
     refs, declarations, _, _ = class_info(after.read(prefix + 'blocks/BlockThaumostaticRefuelerSpire.class'))
     assert 'func_149749_a' in {name for _, _, name, _ in declarations}
     assert {'func_72805_g', 'func_147468_f'} <= {name for name, _ in refs}
-    for name in changed:
+    assert b'AutomagyDeferredDrops' in after.read(prefix + 'lib/DeferredItemDrops.class')
+    assert b'onDeferredDropsTick' in after.read(prefix + 'lib/events/AutomagyEventHandler.class')
+    assert b'DeferredItemDrops' in after.read(prefix + 'lib/TjUtil.class')
+    for name in changed | added:
         assert b'dreamcraft' not in after.read(name), name
     classes = sum(name.endswith('.class') for name in entries)
     report = {
         'file': patched.name,
         'sha256': hashlib.sha256(patched.read_bytes()).hexdigest(),
         'original_sha256': source_hash,
-        'classes': classes,
+        'classes': classes + len(added),
         'unchanged_classes': classes - len(changed),
         'unchanged_resources': sum(not name.endswith('.class') for name in entries),
         'changed_entries': sorted(changed),
+        'added_entries': sorted(added),
         'java_class_version': 52,
         'srg_names_verified': True,
         'server_dispenser_constructor_present': True,

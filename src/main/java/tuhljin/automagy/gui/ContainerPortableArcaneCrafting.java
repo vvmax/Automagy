@@ -232,7 +232,7 @@ public class ContainerPortableArcaneCrafting extends Container implements IRepor
                                 entityitem.motionZ = (player.worldObj.rand.nextFloat() - player.worldObj.rand.nextFloat()) * 0.1F;
                             }
                         } else {
-                            player.dropPlayerItemWithRandomChoice(stack, false);
+                            tuhljin.automagy.lib.TjUtil.dropItemIntoWorld(stack, player.worldObj, player.posX, player.posY + 0.5, player.posZ);
                         }
                     }
                 }
