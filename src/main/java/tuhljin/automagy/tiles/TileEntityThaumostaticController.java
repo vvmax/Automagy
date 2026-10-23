@@ -319,11 +319,21 @@ public class TileEntityThaumostaticController extends TileEntityThaumostaticPylo
     }
 
     public void deactivate() {
+        if (this.worldObj.isRemote) return;
         Block b = this.worldObj.getBlock(this.xCoord, this.spireY, this.zCoord);
         if (b == ModBlocks.thaumostaticSpire) {
-            MessageParticles.sendToClients(this.worldObj, this.xCoord, this.spireY, this.zCoord, 0, 0, 0, (short)0);
-            b.dropBlockAsItem(this.worldObj, this.xCoord, this.spireY, this.zCoord, 0, 0);
-            this.worldObj.setBlockToAir(this.xCoord, this.spireY, this.zCoord);
+            int metadata = this.worldObj.getBlockMetadata(this.xCoord, this.spireY, this.zCoord);
+            // Only the base at our saved height belongs to this controller. A moved upper half is not a base.
+            if (metadata == 0) {
+                int y = this.spireY;
+                if (!this.worldObj.setBlockToAir(this.xCoord, y, this.zCoord)) return;
+                this.spireY = -1;
+                this.active = false;
+                this.markDirty();
+                b.dropBlockAsItem(this.worldObj, this.xCoord, y, this.zCoord, metadata, 0);
+                MessageParticles.sendToClients(this.worldObj, this.xCoord, y, this.zCoord, 0, 0, 0, (short)0);
+                return;
+            }
         }
 
         this.spireY = -1;

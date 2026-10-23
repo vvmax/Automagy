@@ -81,6 +81,7 @@ public class TileEntityInventarium extends ModTileEntity implements IHasItemList
     protected Map<Integer, Boolean> taskReturning = new HashMap<>();
     private Map<HashableItemWithoutSize, Integer> requestsClaimedThisTick = new HashMap<>();
     private boolean constructStrikeOne = false;
+    private boolean dismantling;
     private long timeMarkedAsPreferredLink = 0L;
     public int ticksToAnim = 0;
     private Object beam = null;
@@ -98,7 +99,13 @@ public class TileEntityInventarium extends ModTileEntity implements IHasItemList
 
     @Override
     public void updateEntity() {
+        if (this.isInvalid() || this.dismantling) return;
         if (!this.worldObj.isRemote) {
+            if (this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) != this
+                || this.worldObj.getBlock(this.xCoord, this.yCoord, this.zCoord) != ModBlocks.inventariumCore) {
+                this.invalidate();
+                return;
+            }
             if (!this.addedToMap) {
                 int dimension = this.worldObj.provider.dimensionId;
                 HashSet<BlockCoord> bcs;
@@ -131,8 +138,16 @@ public class TileEntityInventarium extends ModTileEntity implements IHasItemList
                 this.ticksSinceValidityCheck = 0;
                 if (!checkValidity(this.worldObj, this.xCoord, this.yCoord, this.zCoord, false)) {
                     if (this.constructStrikeOne) {
-                        this.getBlockType().dropBlockAsItem(this.worldObj, this.xCoord, this.yCoord, this.zCoord, 0, 0);
-                        this.worldObj.setBlockToAir(this.xCoord, this.yCoord, this.zCoord);
+                        this.dismantling = true;
+                        try {
+                            int metadata = this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord);
+                            if (this.worldObj.setBlockToAir(this.xCoord, this.yCoord, this.zCoord)) {
+                                this.invalidate();
+                                ModBlocks.inventariumCore.dropBlockAsItem(this.worldObj, this.xCoord, this.yCoord, this.zCoord, metadata, 0);
+                            }
+                        } finally {
+                            this.dismantling = false;
+                        }
                     } else {
                         this.constructStrikeOne = true;
                         this.ticksSinceValidityCheck = VALIDITY_CHECK_FREQUENCY / 2;
@@ -702,7 +717,9 @@ public class TileEntityInventarium extends ModTileEntity implements IHasItemList
 
     @Override
     public void invalidate() {
-        if (this.worldObj != null && !this.worldObj.isRemote) {
+        if (this.worldObj != null && !this.worldObj.isRemote
+            && !(this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) instanceof TileEntityInventarium
+                && this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) != this)) {
             int dimension = this.worldObj.provider.dimensionId;
             if (coreLocations.containsKey(dimension)) {
                 HashSet<BlockCoord> bcs = coreLocations.get(dimension);

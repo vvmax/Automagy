@@ -10,6 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import thaumcraft.common.entities.EntitySpecialItem;
+import tuhljin.automagy.lib.DeferredItemDrops;
 
 public class EntityItemDelayedFall extends EntitySpecialItem implements IEntityAdditionalSpawnData {
     public static int DELAY_AFTER_PLAYER_TOUCHED = 200;
@@ -52,8 +53,11 @@ public class EntityItemDelayedFall extends EntitySpecialItem implements IEntityA
             entityitem.motionX = this.motionX;
             entityitem.motionY = this.motionY;
             entityitem.motionZ = this.motionZ;
-            this.worldObj.spawnEntityInWorld(entityitem);
-            this.setDead();
+            if (this.worldObj.spawnEntityInWorld(entityitem)) {
+                this.setDead();
+            } else {
+                this.delayBeforeFall = 20;
+            }
         }
     }
 
@@ -88,17 +92,22 @@ public class EntityItemDelayedFall extends EntitySpecialItem implements IEntityA
     }
 
     public static EntityItemDelayedFall spawn(ItemStack stack, World world, double x, double y, double z) {
+        EntityItemDelayedFall entityitem = create(stack, world, x, y, z);
+        DeferredItemDrops.spawnOrQueue(entityitem);
+        return entityitem;
+    }
+
+    private static EntityItemDelayedFall create(ItemStack stack, World world, double x, double y, double z) {
         EntityItemDelayedFall entityitem = new EntityItemDelayedFall(world, x, y, z, stack, DELAY_AFTER_PLAYER_TOUCHED);
         entityitem.delayBeforeCanPickup = 1;
         entityitem.motionY = 0.1000000014901161;
         entityitem.motionX = 0.0;
         entityitem.motionZ = 0.0;
-        world.spawnEntityInWorld(entityitem);
         return entityitem;
     }
 
     public static EntityItemDelayedFall toss(ItemStack stack, EntityPlayer player) {
-        EntityItemDelayedFall entityitem = spawn(stack, player.worldObj, player.posX, player.posY + Math.max(player.getEyeHeight() * 0.5, 0.25), player.posZ);
+        EntityItemDelayedFall entityitem = create(stack, player.worldObj, player.posX, player.posY + Math.max(player.getEyeHeight() * 0.5, 0.25), player.posZ);
         Random rand = player.worldObj.rand;
         float f = 0.3F;
         entityitem.motionX = -MathHelper.sin(player.rotationYaw / 180.0F * (float) Math.PI)
@@ -114,6 +123,7 @@ public class EntityItemDelayedFall extends EntitySpecialItem implements IEntityA
         entityitem.motionX = entityitem.motionX + Math.cos(f1) * f;
         entityitem.motionY = entityitem.motionY + (rand.nextFloat() - rand.nextFloat()) * 0.1F;
         entityitem.motionZ = entityitem.motionZ + Math.sin(f1) * f;
+        DeferredItemDrops.spawnOrQueue(entityitem);
         return entityitem;
     }
 }

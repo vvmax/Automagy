@@ -91,12 +91,16 @@ public class PortableCraftingTest {
     @Test public void closingTwiceReturnsMaterialsOnlyOnce() throws Exception {
         Fixture f = new Fixture(4);
         f.player.worldObj = mock(World.class);
+        f.player.worldObj.rand = new java.util.Random(1);
+        java.lang.reflect.Field provider = World.class.getDeclaredField("provider");
+        provider.setAccessible(true);
+        provider.set(f.player.worldObj, new net.minecraft.world.WorldProviderSurface());
         InventoryForArcaneCrafting inv = f.attachCraftingInventory();
         inv.setInventorySlotContentsSoftly(0, new ItemStack(new Item(), 64));
         AtomicInteger returned = new AtomicInteger();
-        when(f.player.dropPlayerItemWithRandomChoice(any(), anyBoolean())).thenAnswer(call -> {
-            returned.addAndGet(((ItemStack)call.getArgument(0)).stackSize);
-            return null;
+        when(f.player.worldObj.spawnEntityInWorld(any())).thenAnswer(call -> {
+            returned.addAndGet(((net.minecraft.entity.item.EntityItem)call.getArgument(0)).getEntityItem().stackSize);
+            return true;
         });
         boolean previous = ContainerPortableArcaneCrafting.droppedItemsHover;
         try {

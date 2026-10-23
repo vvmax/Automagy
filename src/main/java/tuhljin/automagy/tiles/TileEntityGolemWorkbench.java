@@ -298,7 +298,7 @@ public class TileEntityGolemWorkbench extends ModTileEntityWithInventory impleme
     }
 
     protected ItemStack getCraftableResults() {
-        if (this.recipeIndex > this.recipes - 1) {
+        if (this.recipeIndex < 0 || this.recipeIndex > this.recipes - 1) {
             this.recipeIndex = 0;
         }
 
@@ -346,6 +346,7 @@ public class TileEntityGolemWorkbench extends ModTileEntityWithInventory impleme
     }
 
     public ItemStack getCraftingResult(int index) {
+        if (index < 0 || index >= this.recipes || this.invCrafting[index] == null) return null;
         if (this.fuzzy) {
             ItemStack placeholder = this.getStackInSlot(0);
             if (placeholder != null) {
@@ -655,11 +656,16 @@ public class TileEntityGolemWorkbench extends ModTileEntityWithInventory impleme
         }
 
         this.recipeIndex = nbttagcompound.getInteger("recipeIndex");
-        if (this.recipeIndex > this.recipes - 1) {
+        if (this.recipeIndex < 0 || this.recipeIndex > this.recipes - 1) {
             this.recipeIndex = 0;
         }
 
         this.replacementIndex = getIntArrayFromNbtOrDefault(nbttagcompound, "phReplaceIndex", 1, 3);
+        for (int i = 0; i < this.replacementIndex.length; i++) {
+            if (this.replacementIndex[i] < 1 || this.replacementIndex[i] >= NUM_COMPONENT_SLOTS) {
+                this.replacementIndex[i] = 1;
+            }
+        }
     }
 
     @Override

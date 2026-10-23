@@ -407,24 +407,49 @@ public class TileEntityThirstyTank extends ModTileEntity implements ITileWithTan
                             TileEntityThirstyTank.SourceLiquidResult result = this.findSourceLiquid(block, x, y, z, dir);
                             if (result != null) {
                                 Block source = this.worldObj.getBlock(result.x, result.y, result.z);
-                                if (source instanceof BlockFluidBase) {
-                                    ((BlockFluidBase)source).drain(this.worldObj, result.x, result.y, result.z, true);
-                                } else {
-                                    this.worldObj.setBlockToAir(result.x, result.y, result.z);
+                                if (source != result.block) {
+                                    this.cooldown = this.drinkFrequency;
+                                    return;
                                 }
-
-                                ok = true;
-                                added = result.amount;
-                                this.worldObj
-                                    .playSoundEffect(
-                                        result.x,
-                                        result.y,
-                                        result.z,
-                                        "random.drink",
-                                        0.2F,
-                                        this.worldObj.rand.nextFloat() * 0.5F + this.worldObj.rand.nextFloat() * 0.25F + 0.5F
-                                    );
-                                MessageParticles.sendToClients(this.worldObj, result.x, result.y, result.z, 0, 0, 0, (short)8);
+                                if (source instanceof BlockFluidBase) {
+                                    int previousMetadata = this.worldObj.getBlockMetadata(result.x, result.y, result.z);
+                                    TileEntity previousTile = this.worldObj.getTileEntity(result.x, result.y, result.z);
+                                    NBTTagCompound previousData = null;
+                                    if (previousTile != null) {
+                                        previousData = new NBTTagCompound();
+                                        previousTile.writeToNBT(previousData);
+                                    }
+                                    FluidStack drained = ((BlockFluidBase)source).drain(this.worldObj, result.x, result.y, result.z, true);
+                                    ok = drained != null && drained.amount > 0 && drained.getFluid() == fluidFound;
+                                    // Forge's own classic fluid returns a bucket even when setBlock fails.
+                                    // A successful extraction must change the source block, metadata or its tile data.
+                                    if (ok && this.worldObj.getBlock(result.x, result.y, result.z) == source
+                                        && this.worldObj.getBlockMetadata(result.x, result.y, result.z) == previousMetadata) {
+                                        TileEntity remainingTile = this.worldObj.getTileEntity(result.x, result.y, result.z);
+                                        NBTTagCompound remainingData = null;
+                                        if (remainingTile != null) {
+                                            remainingData = new NBTTagCompound();
+                                            remainingTile.writeToNBT(remainingData);
+                                        }
+                                        ok = previousData == null ? remainingData != null : !previousData.equals(remainingData);
+                                    }
+                                    added = ok ? drained.amount : 0;
+                                } else {
+                                    ok = this.worldObj.setBlockToAir(result.x, result.y, result.z);
+                                    added = result.amount;
+                                }
+                                if (ok) {
+                                    this.worldObj
+                                        .playSoundEffect(
+                                            result.x,
+                                            result.y,
+                                            result.z,
+                                            "random.drink",
+                                            0.2F,
+                                            this.worldObj.rand.nextFloat() * 0.5F + this.worldObj.rand.nextFloat() * 0.25F + 0.5F
+                                        );
+                                    MessageParticles.sendToClients(this.worldObj, result.x, result.y, result.z, 0, 0, 0, (short)8);
+                                }
                             }
                         } else if (!this.voids || this.tank.getFluidAmount() < this.tank.getCapacity()) {
                             ok = true;
@@ -618,7 +643,7 @@ public class TileEntityThirstyTank extends ModTileEntity implements ITileWithTan
             if (tankFluid == null) {
                 return fluid;
             } else {
-                return tankFluid.fluidID == fluid.getID() ? fluid : null;
+                return tankFluid.getFluid() == fluid ? fluid : null;
             }
         } else {
             return null;
@@ -687,7 +712,7 @@ public class TileEntityThirstyTank extends ModTileEntity implements ITileWithTan
                         }
 
                         FluidStack amt = ((BlockFluidBase)block).drain(this.worldObj, x, y, z, false);
-                        added = amt.amount;
+                        added = amt == null ? 0 : amt.amount;
                         if (added < 1) {
                             return null;
                         }

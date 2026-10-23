@@ -79,13 +79,19 @@ public class TjUtil {
     }
 
     public static Pattern getSafePatternUsingAsteriskForWildcard(String str) {
-        String s = str.replaceAll("\\*+", ".*");
-        s = Pattern.quote(s);
-        s = s.replace(".*", "\\E.*\\Q");
-        s = s.replace("\\Q\\E", "");
+        String[] parts = str.split("\\*+", -1);
+        StringBuilder expression = new StringBuilder(Pattern.quote(parts[0]));
+        // Commit each interior literal to its earliest match. Trying later occurrences can never
+        // help a glob match, but ordinary chained .* expressions explore exponentially many choices.
+        for (int i = 1; i < parts.length - 1; i++) {
+            expression.append("(?>.*?").append(Pattern.quote(parts[i])).append(')');
+        }
+        if (parts.length > 1) {
+            expression.append(".*").append(Pattern.quote(parts[parts.length - 1]));
+        }
 
         try {
-            return Pattern.compile(s);
+            return Pattern.compile(expression.toString());
         } catch (Exception var4) {
             FMLLog.severe("[Automagy] Failed to create regex pattern. Name filter will not function properly. String was: " + str);
             return null;
@@ -259,7 +265,6 @@ public class TjUtil {
                 j1 = stack.stackSize;
             }
 
-            stack.stackSize -= j1;
             entityitem = new EntityItem(world, x + f, y + f1, z + f2, new ItemStack(stack.getItem(), j1, stack.getMetadata()));
             float f3 = 0.05F;
             entityitem.motionX = (float)rand.nextGaussian() * f3;
@@ -269,7 +274,8 @@ public class TjUtil {
                 entityitem.getEntityItem().setTagCompound((NBTTagCompound)stack.getTagCompound().copy());
             }
 
-            world.spawnEntityInWorld(entityitem);
+            DeferredItemDrops.spawnOrQueue(entityitem);
+            stack.stackSize -= j1;
         }
 
         return entityitem;
@@ -281,7 +287,7 @@ public class TjUtil {
         entityitem.motionX = (float)rand.nextGaussian() * f3;
         entityitem.motionY = (float)rand.nextGaussian() * f3 + 0.2F;
         entityitem.motionZ = (float)rand.nextGaussian() * f3;
-        world.spawnEntityInWorld(entityitem);
+        DeferredItemDrops.spawnOrQueue(entityitem);
         return entityitem;
     }
 
@@ -363,7 +369,7 @@ public class TjUtil {
     }
 
     public static boolean isPlayerOnline(String name) {
-        for (EntityPlayerMP curr : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
+        for (EntityPlayerMP curr : (java.util.List<EntityPlayerMP>)MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
             if (curr.getCommandSenderName() == name) {
                 return true;
             }

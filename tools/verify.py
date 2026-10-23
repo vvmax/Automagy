@@ -92,7 +92,9 @@ def main():
     java_files = list(java_root.rglob('*.java'))
     with zipfile.ZipFile(ROOT / 'input/Automagy-1.7.10-0.28.2.jar') as archive:
         top_level = {n[:-6] + '.java' for n in archive.namelist() if n.endswith('.class') and '$' not in n}
-    assert top_level == {p.relative_to(java_root).as_posix() for p in java_files}
+    source_paths = {p.relative_to(java_root).as_posix() for p in java_files}
+    assert top_level <= source_paths
+    assert source_paths - top_level <= {'tuhljin/automagy/lib/DeferredItemDrops.java'}
     # Detect decompiler failure comments without mistaking the mod's own log messages for failures.
     markers = ('$VF:', "Couldn't be decompiled", 'could not be decompiled')
     for path in java_files:

@@ -6,6 +6,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import java.util.ArrayList;
@@ -78,6 +79,7 @@ import tuhljin.automagy.items.ModItems;
 import tuhljin.automagy.lib.AutomagyConfig;
 import tuhljin.automagy.lib.ThaumcraftExtension;
 import tuhljin.automagy.lib.TjUtil;
+import tuhljin.automagy.lib.DeferredItemDrops;
 import tuhljin.automagy.lib.compat.CompatibilityManager;
 import tuhljin.automagy.lib.inventory.FilteringItemList;
 import tuhljin.automagy.lib.inventory.HashableItemWithoutSize;
@@ -91,6 +93,10 @@ import tuhljin.automagy.tiles.TileEntityInventarium;
 import tuhljin.automagy.tiles.TileEntityMobLure;
 
 public class AutomagyEventHandler {
+    @SubscribeEvent
+    public void onDeferredDropsTick(TickEvent.WorldTickEvent event) {
+        if (event.phase == TickEvent.Phase.END && !event.world.isRemote) DeferredItemDrops.tick(event.world);
+    }
     public static int ENDERMAN_SPAWN_INCREASE_CHANCE = 16;
     protected WorldSpecificCoordinates lastBlazeSpawner = null;
     protected List<Map> entityDataMaps;

@@ -4,6 +4,7 @@
 /.gradle/
 /run/
 /logs/latest.log
+/logs/*.log.gz
 /*.jar
 /*.zip
 
