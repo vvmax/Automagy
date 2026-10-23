@@ -5,11 +5,23 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+import tuhljin.automagy.lib.inventory.MirrorspaceItems;
 
 public class TileEntityMirrorMultiDest extends ModTileEntityWithInventoryOneWay implements IInventariumMemoryUser {
     public int linkX;
     public int linkY = -1;
     public int linkZ;
+    public final MirrorspaceItems pendingOutput = new MirrorspaceItems(this, "PendingOutput");
+
+    @Override
+    public boolean canUpdate() {
+        return true;
+    }
+
+    @Override
+    public void updateEntity() {
+        if (!this.worldObj.isRemote && this.pendingOutput.ejectRandom()) this.markDirty(false);
+    }
 
     public TileEntityMirrorMultiDest() {
         super("blockMirrorMultiDest");
@@ -50,6 +62,7 @@ public class TileEntityMirrorMultiDest extends ModTileEntityWithInventoryOneWay 
 
     @Override
     public void setInventorySlotContents(int slot, ItemStack stack) {
+        if (stack == null || stack.getItem() == null || stack.stackSize <= 0) return;
         int leftover = stack.stackSize;
         TileEntityInventarium inventarium = this.getLinkedInventarium();
         if (inventarium != null) {
@@ -62,7 +75,10 @@ public class TileEntityMirrorMultiDest extends ModTileEntityWithInventoryOneWay 
         if (leftover > 0) {
             ItemStack copy = stack.copy();
             copy.stackSize = leftover;
-            this.spawnItem(copy);
+            if (!this.spawnItem(copy)) {
+                this.pendingOutput.add(copy);
+                this.markDirty(false);
+            }
         }
     }
 
@@ -82,8 +98,7 @@ public class TileEntityMirrorMultiDest extends ModTileEntityWithInventoryOneWay 
             ie2.motionY = face.offsetY * 0.15F;
             ie2.motionZ = face.offsetZ * 0.15F;
             ie2.timeUntilPortal = 20;
-            this.worldObj.spawnEntityInWorld(ie2);
-            return true;
+            return this.worldObj.spawnEntityInWorld(ie2);
         } catch (Exception var4) {
             return false;
         }
@@ -113,6 +128,7 @@ public class TileEntityMirrorMultiDest extends ModTileEntityWithInventoryOneWay 
         nbttagcompound.setInteger("linkX", this.linkX);
         nbttagcompound.setInteger("linkY", this.linkY);
         nbttagcompound.setInteger("linkZ", this.linkZ);
+        this.pendingOutput.writeToNBT(nbttagcompound);
     }
 
     @Override
@@ -120,5 +136,6 @@ public class TileEntityMirrorMultiDest extends ModTileEntityWithInventoryOneWay 
         this.linkX = nbttagcompound.getInteger("linkX");
         this.linkY = nbttagcompound.getInteger("linkY");
         this.linkZ = nbttagcompound.getInteger("linkZ");
+        this.pendingOutput.readFromNBT(nbttagcompound);
     }
 }

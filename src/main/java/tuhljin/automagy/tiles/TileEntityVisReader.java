@@ -411,12 +411,15 @@ public class TileEntityVisReader extends ModTileEntityWithInventory implements I
         if (configNum >= 0 && configNum < 4) {
             switch (type) {
                 case 0:
+                    if (data < 0 || data > 4) return;
                     this.modes[configNum] = data;
                     break;
                 case 1:
+                    if (data < 0) return;
                     this.capacities[configNum] = data;
                     break;
                 case 2:
+                    if (data < 0 || data > ALL_DIR) return;
                     this.outputDirs[configNum] = data;
                     break;
                 case 3:
@@ -531,6 +534,12 @@ public class TileEntityVisReader extends ModTileEntityWithInventory implements I
         this.capacities = getIntArrayFromNbtOrDefault(nbttagcompound, "capacity", 0, 4);
         this.outputDirs = getIntArrayFromNbtOrDefault(nbttagcompound, "outputDir", 6, 4);
         this.inverseSignals = getBooleanArrayFromNbtOrDefault(nbttagcompound, "inverse", false, 4);
+        // Repair invalid settings saved by older versions as well as rejecting new packets.
+        for (int i = 0; i < NUM_CONFIGURATIONS; i++) {
+            if (this.modes[i] < 0 || this.modes[i] > 4) this.modes[i] = 0;
+            if (this.capacities[i] < 0) this.capacities[i] = 0;
+            if (this.outputDirs[i] < 0 || this.outputDirs[i] > ALL_DIR) this.outputDirs[i] = ALL_DIR;
+        }
     }
 
     @Override

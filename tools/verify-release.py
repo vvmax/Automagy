@@ -9,7 +9,7 @@ from verify import class_info
 
 root = Path(__file__).resolve().parent.parent
 original = root / 'input/Automagy-1.7.10-0.28.2.jar'
-patched = root / 'build/libs/Automagy-1.7.10-0.28.3.jar'
+patched = root / 'build/libs/Automagy-1.7.10-0.28.4.jar'
 expected = {
     'entities/EntityAvaricePearl',
     'entities/EntityAvaricePearl$EntitySelectorItem',
@@ -17,6 +17,16 @@ expected = {
     'gui/ContainerPortableArcaneCrafting',
     'gui/FakeTileMagicWorkbench',
     'items/ItemBucketCustom',
+    'gui/ContainerAutoHandMirror',
+    'network/MessageGUIInventariumRequest',
+    'network/MessageKeyPressed',
+    'tiles/TileEntityVisReader',
+    'tiles/TileEntityMirrorMultiDest',
+    'blocks/BlockMirrorMultiDest',
+    'items/ItemNetherHeart',
+    'lib/inventory/MirrorspaceItems',
+    'lib/inventory/MappedItemsOrderedByTimeAdded',
+    'lib/inventory/MappedItemsWithGroupedCounts',
 }
 expected = {'tuhljin/automagy/' + name + '.class' for name in expected}
 manifest = json.loads((root / 'provenance.json').read_text())
@@ -44,6 +54,12 @@ with zipfile.ZipFile(original) as before, zipfile.ZipFile(patched) as after:
     assert b'net/minecraftforge/event/ForgeEventFactory' in bucket
     refs, declarations, _, _ = class_info(after.read(prefix + 'gui/ContainerPortableArcaneCrafting.class'))
     assert {'func_75145_c', 'func_75144_a', 'func_75134_a'} <= {name for _, _, name, _ in declarations}
+    heart = after.read(prefix + 'items/ItemNetherHeart.class')
+    assert b'onPlayerMultiBlockPlace' in heart and b'onPlayerBlockPlace' in heart
+    request = after.read(prefix + 'network/MessageGUIInventariumRequest.class')
+    assert b'ContainerScribe' in request and b'canRequestItems' in request and b'getRequesterCoord' in request
+    for name in changed:
+        assert b'dreamcraft' not in after.read(name), name
     classes = sum(name.endswith('.class') for name in entries)
     report = {
         'file': patched.name,

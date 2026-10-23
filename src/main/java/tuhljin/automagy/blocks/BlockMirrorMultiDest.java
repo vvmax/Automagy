@@ -117,6 +117,11 @@ public class BlockMirrorMultiDest extends BlockMirror {
     public void breakBlock(World world, int x, int y, int z, Block p_149749_5_, int p_149749_6_) {
         TileEntity te = world.getTileEntity(x, y, z);
         if (te instanceof TileEntityMirrorMultiDest) {
+            ArrayList<ItemStack> pending = ((TileEntityMirrorMultiDest)te).pendingOutput.stacks;
+            if (!world.isRemote && !pending.isEmpty()) {
+                TjUtil.dropItemsIntoWorld(pending, world, x, y, z);
+                pending.clear();
+            }
             TileEntityInventarium teInv = ((TileEntityMirrorMultiDest)te).getLinkedInventarium();
             if (teInv != null) {
                 teInv.removeMultiDestMirror();

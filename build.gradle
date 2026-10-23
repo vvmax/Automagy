@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'tuhljin.automagy'
-version = '0.28.3'
+version = '0.28.4'
 java { toolchain { languageVersion = JavaLanguageVersion.of(8) } }
 minecraft {
     mcVersion = '1.7.10'
@@ -20,7 +20,17 @@ def patchedRoots = [
     'tuhljin/automagy/entities/EntityItemDelayedFall',
     'tuhljin/automagy/gui/ContainerPortableArcaneCrafting',
     'tuhljin/automagy/gui/FakeTileMagicWorkbench',
-    'tuhljin/automagy/items/ItemBucketCustom'
+    'tuhljin/automagy/items/ItemBucketCustom',
+    'tuhljin/automagy/gui/ContainerAutoHandMirror',
+    'tuhljin/automagy/network/MessageGUIInventariumRequest',
+    'tuhljin/automagy/network/MessageKeyPressed',
+    'tuhljin/automagy/tiles/TileEntityVisReader',
+    'tuhljin/automagy/tiles/TileEntityMirrorMultiDest',
+    'tuhljin/automagy/blocks/BlockMirrorMultiDest',
+    'tuhljin/automagy/items/ItemNetherHeart',
+    'tuhljin/automagy/lib/inventory/MirrorspaceItems',
+    'tuhljin/automagy/lib/inventory/MappedItemsOrderedByTimeAdded',
+    'tuhljin/automagy/lib/inventory/MappedItemsWithGroupedCounts'
 ]
 sourceSets.main {
     java.setSrcDirs([providers.gradleProperty('pearlSourceRoot').getOrElse('src/main/java')])
@@ -36,9 +46,9 @@ def remapper = tasks.register('compileRemapper', JavaCompile) {
     javaCompiler = javaToolchains.compilerFor { languageVersion = JavaLanguageVersion.of(17) }
 }
 def devJars = []
-['Automagy-1.7.10-0.28.2', 'Thaumcraft-1.7.10-4.2.3.5'].each { artifact ->
+['Automagy-1.7.10-0.28.2', 'Thaumcraft-1.7.10-4.2.3.5', 'Baubles-1.7.10-1.0.1.10'].each { artifact ->
     def destination = layout.buildDirectory.file("dependencies/${artifact}-mcp.jar")
-    def prepare = tasks.register("prepare${artifact.startsWith('Automagy') ? 'Automagy' : 'Thaumcraft'}", JavaExec) {
+    def prepare = tasks.register("prepare${artifact.split('-')[0]}", JavaExec) {
         dependsOn(remapper)
         classpath = files(remapper.flatMap { it.destinationDirectory }) + asmJars
         mainClass = 'RemapJar'

@@ -73,8 +73,7 @@ public class MirrorspaceItems {
             ie2.motionY = face.offsetY * 0.15F;
             ie2.motionZ = face.offsetZ * 0.15F;
             ie2.timeUntilPortal = 20;
-            this.parent.getWorld().spawnEntityInWorld(ie2);
-            return true;
+            return this.parent.getWorld().spawnEntityInWorld(ie2);
         } catch (Exception var4) {
             return false;
         }

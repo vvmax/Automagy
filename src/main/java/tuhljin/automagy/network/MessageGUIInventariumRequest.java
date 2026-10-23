@@ -9,6 +9,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import tuhljin.automagy.lib.TjUtil;
+import tuhljin.automagy.gui.ContainerScribe;
+import tuhljin.automagy.lib.inventory.HashableItemWithoutSize;
 import tuhljin.automagy.lib.struct.WorldSpecificCoordinates;
 import tuhljin.automagy.tiles.IInventariumBook;
 import tuhljin.automagy.tiles.IInventariumBookLinksMirror;
@@ -80,21 +82,38 @@ public class MessageGUIInventariumRequest implements IMessage, IMessageHandler<M
 
     public IMessage onMessage(MessageGUIInventariumRequest message, MessageContext ctx) {
         EntityPlayer player = ctx.getServerHandler().playerEntity;
-        if (player != null && player.worldObj.provider.dimensionId == message.dim) {
-            TileEntity te = player.worldObj.getTileEntity(message.x, message.y, message.z);
-            if (te instanceof TileEntityInventarium) {
-                TileEntityInventarium teInv = (TileEntityInventarium)te;
-                if (message.yR != -1 && player.worldObj.provider.dimensionId == message.dimR && teInv.isTrackingDestinations()) {
-                    TileEntity te2 = player.worldObj.getTileEntity(message.xR, message.yR, message.zR);
-                    if (te2 instanceof IInventariumBookLinksMirror && ((IInventariumBookLinksMirror)te2).isOutputMirrorInRange()) {
-                        teInv.receiveRequestFromClient(message.stack, message.rearrange, (IInventariumBookLinksMirror)te2);
-                    } else {
-                        teInv.receiveRequestFromClient(message.stack, message.rearrange, null);
-                    }
-                } else {
-                    teInv.receiveRequestFromClient(message.stack, message.rearrange, null);
-                }
-            }
+        if (player == null || !(player.openContainer instanceof ContainerScribe)
+            || message.stack == null || message.stack.getItem() == null
+            || message.stack.stackSize == 0 || message.stack.stackSize == Integer.MIN_VALUE) {
+            return null;
+        }
+        ContainerScribe container = (ContainerScribe)player.openContainer;
+        IInventariumBook book = container.book;
+        if (book == null || !book.canRequestItems() || !container.canInteractWith(player)) {
+            return null;
+        }
+        WorldSpecificCoordinates link = book.getLinkCoord();
+        if (link == null || player.worldObj.provider.dimensionId != link.dim
+            || link.dim != message.dim || link.x != message.x || link.y != message.y || link.z != message.z
+            || !player.worldObj.blockExists(link.x, link.y, link.z)) {
+            return null;
+        }
+        // The open server-side book determines the destination, never another book named by the client.
+        WorldSpecificCoordinates requester = book.getRequesterCoord();
+        if (requester == null ? message.yR != -1 : requester.dim != message.dimR
+            || requester.x != message.xR || requester.y != message.yR || requester.z != message.zR) {
+            return null;
+        }
+        TileEntity te = player.worldObj.getTileEntity(link.x, link.y, link.z);
+        if (te instanceof TileEntityInventarium) {
+            TileEntityInventarium inventarium = (TileEntityInventarium)te;
+            if (message.stack.stackSize > 0 && (long)Math.max(0,
+                inventarium.getRequestedItems().get(new HashableItemWithoutSize(message.stack)))
+                + message.stack.stackSize > Integer.MAX_VALUE) return null;
+            IInventariumBookLinksMirror destination = book instanceof IInventariumBookLinksMirror
+                && ((IInventariumBookLinksMirror)book).isOutputMirrorInRange() && inventarium.isTrackingDestinations()
+                ? (IInventariumBookLinksMirror)book : null;
+            inventarium.receiveRequestFromClient(message.stack, message.rearrange, destination);
         }
 
         return null;

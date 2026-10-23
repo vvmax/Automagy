@@ -16,6 +16,12 @@
       "size": 12565807,
       "sha256": "3dba9786966974701578a658d1bb369bf35bdf5f363079f5ac9c4910a39113be",
       "url": "https://mediafilez.forgecdn.net/files/2227/552/Thaumcraft-1.7.10-4.2.3.5.jar"
+    },
+    {
+      "path": "input/Baubles-1.7.10-1.0.1.10.jar",
+      "size": 95415,
+      "sha256": "05ae8f11b8f9012ebebbf179227b010829739c6284e30da5dd3db220ee682f8a",
+      "url": "https://mediafilez.forgecdn.net/files/2224/857/Baubles-1.7.10-1.0.1.10.jar"
     }
   ],
   "tools": [

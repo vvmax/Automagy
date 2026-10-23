@@ -25,6 +25,7 @@ public class MappedItemsOrderedByTimeAdded implements IItemMap {
     }
 
     public void add(ItemStack stack, boolean rearrange) {
+        if (stack == null || stack.getItem() == null || stack.stackSize <= 0) return;
         HashableItemWithoutSize item = new HashableItemWithoutSize(stack);
         Integer c = this.map.get(item);
         if (c == null) {
@@ -34,7 +35,7 @@ public class MappedItemsOrderedByTimeAdded implements IItemMap {
                 this.map.remove(item);
             }
 
-            this.map.put(item, c + stack.stackSize);
+            this.map.put(item, (int)Math.min(Integer.MAX_VALUE, (long)Math.max(0, c) + stack.stackSize));
         }
     }
 
@@ -43,9 +44,10 @@ public class MappedItemsOrderedByTimeAdded implements IItemMap {
     }
 
     public void subtract(ItemStack stack) {
+        if (stack == null || stack.getItem() == null || stack.stackSize <= 0) return;
         HashableItemWithoutSize item = new HashableItemWithoutSize(stack);
         Integer c = this.map.get(item);
-        int newC = (c == null ? 0 : c) - stack.stackSize;
+        int newC = Math.max(0, c == null ? 0 : c) - stack.stackSize;
         if (newC > 0) {
             this.map.put(item, newC);
         } else if (c != null) {
@@ -85,12 +87,14 @@ public class MappedItemsOrderedByTimeAdded implements IItemMap {
         this.map.clear();
 
         for (ItemStack stack : list) {
-            this.map.put(new HashableItemWithoutSize(stack), stack.stackSize);
+            if (stack != null && stack.getItem() != null && stack.stackSize > 0) {
+                this.map.put(new HashableItemWithoutSize(stack), stack.stackSize);
+            }
         }
     }
 
     public void set(HashableItemWithoutSize item, int count, boolean rearrange) {
-        if (count != 0) {
+        if (count > 0) {
             if (rearrange && this.map.containsKey(item)) {
                 this.map.remove(item);
             }

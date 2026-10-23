@@ -44,7 +44,7 @@ public class MessageKeyPressed implements IMessage, IMessageHandler<MessageKeyPr
                 case 0:
                 case 1:
                     int slot = message.data;
-                    if (slot >= 0 && slot <= InventoryPlayer.getHotbarSize()) {
+                    if (slot >= 0 && slot < InventoryPlayer.getHotbarSize()) {
                         ItemStack wand = player.inventory.getStackInSlot(slot);
                         if (wand != null && wand.getItem() instanceof ItemWandCasting) {
                             if (message.id == 1) {
