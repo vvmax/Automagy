@@ -5,7 +5,7 @@
   "baseline_failures": 18,
   "patched_failures": 0,
   "artifact": {
-    "file": "Automagy-1.7.10-0.28.2-fixes.1.jar",
+    "file": "Automagy-1.7.10-0.28.3.jar",
     "sha256": "8750f1da6703b4a733ff18551121b03f8540f0da6fb1196e13d3ce24954c30ea",
     "original_sha256": "4c1d78e0adee1754675d93ffbadc8c9fe205710cb77538b953e57810f9528efc",
     "classes": 439,

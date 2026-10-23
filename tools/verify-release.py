@@ -9,7 +9,7 @@ from verify import class_info
 
 root = Path(__file__).resolve().parent.parent
 original = root / 'input/Automagy-1.7.10-0.28.2.jar'
-patched = root / 'build/libs/Automagy-1.7.10-0.28.2-fixes.1.jar'
+patched = root / 'build/libs/Automagy-1.7.10-0.28.3.jar'
 expected = {
     'entities/EntityAvaricePearl',
     'entities/EntityAvaricePearl$EntitySelectorItem',
