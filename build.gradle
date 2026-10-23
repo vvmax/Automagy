@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'tuhljin.automagy'
-version = '0.28.4'
+version = '0.28.5'
 java { toolchain { languageVersion = JavaLanguageVersion.of(8) } }
 minecraft {
     mcVersion = '1.7.10'
@@ -30,7 +30,9 @@ def patchedRoots = [
     'tuhljin/automagy/items/ItemNetherHeart',
     'tuhljin/automagy/lib/inventory/MirrorspaceItems',
     'tuhljin/automagy/lib/inventory/MappedItemsOrderedByTimeAdded',
-    'tuhljin/automagy/lib/inventory/MappedItemsWithGroupedCounts'
+    'tuhljin/automagy/lib/inventory/MappedItemsWithGroupedCounts',
+    'tuhljin/automagy/blocks/BlockThaumostaticRefuelerSpire',
+    'tuhljin/automagy/tiles/TileEntityEssentiaLocus'
 ]
 sourceSets.main {
     java.setSrcDirs([providers.gradleProperty('pearlSourceRoot').getOrElse('src/main/java')])
