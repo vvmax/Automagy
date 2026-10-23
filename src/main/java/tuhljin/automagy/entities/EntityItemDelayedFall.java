@@ -38,6 +38,10 @@ public class EntityItemDelayedFall extends EntitySpecialItem implements IEntityA
         }
 
         super.onUpdate();
+        // The superclass can consume, merge or expire this item during the same tick.
+        if (!this.isEntityAlive()) {
+            return;
+        }
         if (this.delayBeforeFall > 0) {
             this.delayBeforeFall--;
         }

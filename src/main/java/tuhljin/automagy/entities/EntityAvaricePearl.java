@@ -1,8 +1,6 @@
 package tuhljin.automagy.entities;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import java.util.HashMap;
 import java.util.List;
@@ -59,7 +57,6 @@ public class EntityAvaricePearl extends EntityThrowable implements IEntityAdditi
         nbt.setShort("thrownFromSlot", (short)thrownFromSlot);
     }
 
-    @SideOnly(Side.CLIENT)
     public EntityAvaricePearl(World par1World, double x, double y, double z, int metadata) {
         super(par1World, x, y, z);
         this.startX = x;
@@ -148,6 +145,9 @@ public class EntityAvaricePearl extends EntityThrowable implements IEntityAdditi
                         int num = 0;
 
                         for (Entity entity : entities) {
+                            if (!entitySelectorItem.isEntityApplicable(entity)) {
+                                continue;
+                            }
                             num += ((EntityItem)entity).getEntityItem().stackSize;
                         }
 
@@ -190,6 +190,10 @@ public class EntityAvaricePearl extends EntityThrowable implements IEntityAdditi
 
             if (this.metadata != 1 || this.stacksGrabbed < 10) {
                 for (Entity entity : entities) {
+                    // A hopper or pickup callback may have consumed an item from this snapshot.
+                    if (!entitySelectorItem.isEntityApplicable(entity)) {
+                        continue;
+                    }
                     entity.setWorld(homeEntity.worldObj);
                     entity.setPosition(homeEntity.posX, homeEntity.posY + 0.5, homeEntity.posZ);
                     if (player != null) {
@@ -267,6 +271,9 @@ public class EntityAvaricePearl extends EntityThrowable implements IEntityAdditi
                         }
 
                         for (Entity entity : entities) {
+                            if (!entitySelectorItem.isEntityApplicable(entity)) {
+                                continue;
+                            }
                             entity.setWorld(player.worldObj);
                             ((EntityItem)entity).delayBeforeCanPickup = 0;
                             entity.onCollideWithPlayer(player);
@@ -288,7 +295,11 @@ public class EntityAvaricePearl extends EntityThrowable implements IEntityAdditi
                     this.posX - grabRange, this.posY - grabRange, this.posZ - grabRange, this.posX + grabRange, this.posY + grabRange, this.posZ + grabRange
                 );
 
-                for (Entity entityx : this.worldObj.selectEntitiesWithinAABB(Entity.class, box, entitySelectorItem)) {
+                List<Entity> entities = this.worldObj.selectEntitiesWithinAABB(Entity.class, box, entitySelectorItem);
+                for (Entity entityx : entities) {
+                    if (!entitySelectorItem.isEntityApplicable(entityx)) {
+                        continue;
+                    }
                     entityx.setPosition(this.startX, this.startY + 0.5, this.startZ);
                     this.stacksGrabbed++;
                     if (this.stacksGrabbed == 10) {
@@ -337,7 +348,12 @@ public class EntityAvaricePearl extends EntityThrowable implements IEntityAdditi
     public static class EntitySelectorItem implements IEntitySelector {
         @Override
         public boolean isEntityApplicable(Entity entity) {
-            return entity instanceof EntityItem;
+            // Hoppers copy the stack and mark the entity dead without clearing its old stack.
+            if (!(entity instanceof EntityItem) || !entity.isEntityAlive()) {
+                return false;
+            }
+            ItemStack stack = ((EntityItem)entity).getEntityItem();
+            return stack != null && stack.getItem() != null && stack.stackSize > 0;
         }
     }
 }

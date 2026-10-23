@@ -1,6 +1,9 @@
 # Downloaded original mod dependencies and generated decompilation output.
 /input/
 /build/
+/.gradle/
+/run/
+/logs/latest.log
 /*.jar
 /*.zip
 

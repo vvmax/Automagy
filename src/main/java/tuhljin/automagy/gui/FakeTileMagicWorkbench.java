@@ -11,7 +11,7 @@ public class FakeTileMagicWorkbench extends TileMagicWorkbench {
 
     public FakeTileMagicWorkbench(IInventory inv, World world) {
         this.inv = inv;
-        this.setWorldObj(this.worldObj);
+        this.setWorldObj(world);
     }
 
     @Override

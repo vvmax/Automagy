@@ -1,0 +1,80 @@
+plugins {
+    id 'java'
+    id 'com.gtnewhorizons.retrofuturagradle' version '2.0.6'
+}
+
+group = 'tuhljin.automagy'
+version = '0.28.2-fixes.1'
+java { toolchain { languageVersion = JavaLanguageVersion.of(8) } }
+minecraft {
+    mcVersion = '1.7.10'
+    mcpMappingChannel = 'stable'
+    mcpMappingVersion = '12'
+    useForgeEmbeddedMappings = false
+    username = 'Developer'
+}
+repositories { mavenCentral() }
+
+def patchedRoots = [
+    'tuhljin/automagy/entities/EntityAvaricePearl',
+    'tuhljin/automagy/entities/EntityItemDelayedFall',
+    'tuhljin/automagy/gui/ContainerPortableArcaneCrafting',
+    'tuhljin/automagy/gui/FakeTileMagicWorkbench',
+    'tuhljin/automagy/items/ItemBucketCustom'
+]
+sourceSets.main {
+    java.setSrcDirs([providers.gradleProperty('pearlSourceRoot').getOrElse('src/main/java')])
+    patchedRoots.each { java.include(it + '.java') }
+    resources.setSrcDirs([])
+}
+
+def asmJars = files('tools/asm-9.8.jar', 'tools/asm-commons-9.8.jar', 'tools/asm-tree-9.8.jar')
+def remapper = tasks.register('compileRemapper', JavaCompile) {
+    source = files('tools/RemapJar.java')
+    classpath = asmJars
+    destinationDirectory = layout.buildDirectory.dir('remapper')
+    javaCompiler = javaToolchains.compilerFor { languageVersion = JavaLanguageVersion.of(17) }
+}
+def devJars = []
+['Automagy-1.7.10-0.28.2', 'Thaumcraft-1.7.10-4.2.3.5'].each { artifact ->
+    def destination = layout.buildDirectory.file("dependencies/${artifact}-mcp.jar")
+    def prepare = tasks.register("prepare${artifact.startsWith('Automagy') ? 'Automagy' : 'Thaumcraft'}", JavaExec) {
+        dependsOn(remapper)
+        classpath = files(remapper.flatMap { it.destinationDirectory }) + asmJars
+        mainClass = 'RemapJar'
+        javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(17) }
+        inputs.files("input/${artifact}.jar", 'mappings/members.tsv')
+        outputs.file(destination)
+        doFirst {
+            destination.get().asFile.parentFile.mkdirs()
+            args = ["input/${artifact}.jar", destination.get().asFile.absolutePath, 'mappings/members.tsv']
+            standardOutput = new ByteArrayOutputStream()
+        }
+    }
+    devJars.add(files(destination).builtBy(prepare))
+}
+dependencies {
+    implementation(devJars)
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.mockito:mockito-core:4.11.0'
+    testImplementation asmJars
+}
+
+tasks.named('test') {
+    useJUnit()
+    testLogging { events 'passed', 'failed', 'skipped' }
+}
+
+tasks.register('patchedJar', Zip) {
+    dependsOn(tasks.named('test'), tasks.named('reobfJar'))
+    archiveFileName = "Automagy-1.7.10-${project.version}.jar"
+    destinationDirectory = layout.buildDirectory.dir('libs')
+    from(zipTree('input/Automagy-1.7.10-0.28.2.jar')) {
+        patchedRoots.each { exclude(it + '.class'); exclude(it + '$*.class') }
+    }
+    from({ zipTree(tasks.named('reobfJar').get().archiveFile.get().asFile) }) {
+        include('**/*.class')
+    }
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
