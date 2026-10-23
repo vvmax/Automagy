@@ -1,0 +1,309 @@
+{
+  "baseline_commit": "199e9fb85048c60db1a79d30c0eec84118512ace",
+  "baseline_description": "Pearl duplication already fixed; remaining changes absent",
+  "tests": 29,
+  "baseline_failures": 18,
+  "patched_failures": 0,
+  "artifact": {
+    "file": "Automagy-1.7.10-0.28.2-fixes.1.jar",
+    "sha256": "8750f1da6703b4a733ff18551121b03f8540f0da6fb1196e13d3ce24954c30ea",
+    "original_sha256": "4c1d78e0adee1754675d93ffbadc8c9fe205710cb77538b953e57810f9528efc",
+    "classes": 439,
+    "unchanged_classes": 433,
+    "unchanged_resources": 241,
+    "changed_entries": [
+      "tuhljin/automagy/entities/EntityAvaricePearl$EntitySelectorItem.class",
+      "tuhljin/automagy/entities/EntityAvaricePearl.class",
+      "tuhljin/automagy/entities/EntityItemDelayedFall.class",
+      "tuhljin/automagy/gui/ContainerPortableArcaneCrafting.class",
+      "tuhljin/automagy/gui/FakeTileMagicWorkbench.class",
+      "tuhljin/automagy/items/ItemBucketCustom.class"
+    ],
+    "java_class_version": 52,
+    "srg_names_verified": true,
+    "server_dispenser_constructor_present": true,
+    "external_dreamcraft_dependency": false
+  },
+  "cases": [
+    {
+      "test": "tuhljin.automagy.entities.ArchivedServerFixTest.dispenserConstructorSurvivesActualServerSideTransformer",
+      "baseline": {
+        "passed": false,
+        "failure_type": "java.lang.AssertionError"
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.entities.ArchivedServerFixTest.expiredHoverItemCannotRespawnAfterItsStackWasCollected",
+      "baseline": {
+        "passed": false,
+        "failure_type": "java.lang.NullPointerException"
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.entities.EntityAvaricePearlTest.emptyStacksAndNonItemsAreRejected",
+      "baseline": {
+        "passed": true
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.entities.EntityAvaricePearlTest.hopperConsumedStackIsNotAvailableToPearl",
+      "baseline": {
+        "passed": true
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.entities.EntityAvaricePearlTest.impactRechecksItemsConsumedAfterQuery",
+      "baseline": {
+        "passed": true
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.entities.EntityAvaricePearlTest.impactStillTransportsLiveItemsWithoutChangingTheirStack",
+      "baseline": {
+        "passed": true
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.entities.EntityAvaricePearlTest.multiplePearlsCannotReuseHopperConsumedEntity",
+      "baseline": {
+        "passed": true
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.entities.EntityAvaricePearlTest.ongoingMiserPearlRechecksConsumedSnapshot",
+      "baseline": {
+        "passed": true
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.entities.EntityAvaricePearlTest.ongoingMiserPearlStillStopsAtTenStacks",
+      "baseline": {
+        "passed": true
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.entities.EntityAvaricePearlTest.partialHopperPickupKeepsOnlyLiveRemainderAndNbt",
+      "baseline": {
+        "passed": true
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.gui.PortableCraftingTest.closingTwiceReturnsMaterialsOnlyOnce",
+      "baseline": {
+        "passed": false,
+        "failure_type": "java.lang.AssertionError"
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.gui.PortableCraftingTest.fakeWorkbenchKeepsTheProvidedWorld",
+      "baseline": {
+        "passed": false,
+        "failure_type": "java.lang.AssertionError"
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.gui.PortableCraftingTest.focusRightClickStillOpensCraftingGui",
+      "baseline": {
+        "passed": true
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.gui.PortableCraftingTest.malformedClickCannotIndexOutsideTheContainer",
+      "baseline": {
+        "passed": false,
+        "failure_type": "java.lang.ArrayIndexOutOfBoundsException"
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.gui.PortableCraftingTest.numberKeyCannotMoveTheBoundWand",
+      "baseline": {
+        "passed": false,
+        "failure_type": "java.lang.AssertionError"
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.gui.PortableCraftingTest.otherNumberKeysStillSwapItems",
+      "baseline": {
+        "passed": true
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.gui.PortableCraftingTest.readOnlyWandCannotReceiveDragDistribution",
+      "baseline": {
+        "passed": false,
+        "failure_type": "java.lang.AssertionError"
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.gui.PortableCraftingTest.replacingFocusClosesItsOldStorageSession",
+      "baseline": {
+        "passed": false,
+        "failure_type": "java.lang.AssertionError"
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.gui.PortableCraftingTest.replacingWandClosesItsOldSession",
+      "baseline": {
+        "passed": false,
+        "failure_type": "java.lang.AssertionError"
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.gui.PortableCraftingTest.resultNumberKeyKeepsRequestedHotbarIndex",
+      "baseline": {
+        "passed": false,
+        "failure_type": "java.lang.AssertionError"
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.gui.PortableCraftingTest.storageClosePreservesCountMetadataAndNbt",
+      "baseline": {
+        "passed": true
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.items.BucketProtectionTest.canceledBucketEventKeepsWorldAndBucket",
+      "baseline": {
+        "passed": false,
+        "failure_type": "java.lang.AssertionError"
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.items.BucketProtectionTest.canceledPlacementRestoresTheOriginalBlock",
+      "baseline": {
+        "passed": false,
+        "failure_type": "java.lang.AssertionError"
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.items.BucketProtectionTest.clientDoesNotChangeBlocksOrFireServerProtectionEvents",
+      "baseline": {
+        "passed": false,
+        "failure_type": "java.lang.AssertionError"
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.items.BucketProtectionTest.deniedBreakPreventsReplacingAPlant",
+      "baseline": {
+        "passed": false,
+        "failure_type": "java.lang.AssertionError"
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.items.BucketProtectionTest.failingPlacementKeepsTheFilledBucket",
+      "baseline": {
+        "passed": false,
+        "failure_type": "java.lang.AssertionError"
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.items.BucketProtectionTest.permittedPlacementStillWorks",
+      "baseline": {
+        "passed": false,
+        "failure_type": "org.mockito.exceptions.verification.WantedButNotInvoked"
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.items.BucketProtectionTest.spawnProtectedTargetIsNotChanged",
+      "baseline": {
+        "passed": false,
+        "failure_type": "java.lang.AssertionError"
+      },
+      "patched": {
+        "passed": true
+      }
+    },
+    {
+      "test": "tuhljin.automagy.items.BucketProtectionTest.throwingProtectionListenerRollsBackWithoutDrops",
+      "baseline": {
+        "passed": false,
+        "failure_type": "java.lang.AssertionError"
+      },
+      "patched": {
+        "passed": true
+      }
+    }
+  ],
+  "scope": "Headless Minecraft/Forge behavior tests, mocked worlds/players/event bus, actual FML SERVER SideTransformer; no live client/server/claim plugin run."
+}

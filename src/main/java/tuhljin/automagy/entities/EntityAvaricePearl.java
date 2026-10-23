@@ -1,8 +1,6 @@
 package tuhljin.automagy.entities;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import java.util.HashMap;
 import java.util.List;
@@ -59,7 +57,6 @@ public class EntityAvaricePearl extends EntityThrowable implements IEntityAdditi
         nbt.setShort("thrownFromSlot", (short)thrownFromSlot);
     }
 
-    @SideOnly(Side.CLIENT)
     public EntityAvaricePearl(World par1World, double x, double y, double z, int metadata) {
         super(par1World, x, y, z);
         this.startX = x;

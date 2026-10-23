@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'tuhljin.automagy'
-version = '0.28.2-pearl-fix.1'
+version = '0.28.2-fixes.1'
 java { toolchain { languageVersion = JavaLanguageVersion.of(8) } }
 minecraft {
     mcVersion = '1.7.10'
@@ -15,11 +15,16 @@ minecraft {
 }
 repositories { mavenCentral() }
 
-// Compile only the repaired entity. Every other class/resource comes from the
-// pinned official release, avoiding a rebuild of unrelated decompiled code.
+def patchedRoots = [
+    'tuhljin/automagy/entities/EntityAvaricePearl',
+    'tuhljin/automagy/entities/EntityItemDelayedFall',
+    'tuhljin/automagy/gui/ContainerPortableArcaneCrafting',
+    'tuhljin/automagy/gui/FakeTileMagicWorkbench',
+    'tuhljin/automagy/items/ItemBucketCustom'
+]
 sourceSets.main {
     java.setSrcDirs([providers.gradleProperty('pearlSourceRoot').getOrElse('src/main/java')])
-    java.include('tuhljin/automagy/entities/EntityAvaricePearl.java')
+    patchedRoots.each { java.include(it + '.java') }
     resources.setSrcDirs([])
 }
 
@@ -52,6 +57,7 @@ dependencies {
     implementation(devJars)
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:4.11.0'
+    testImplementation asmJars
 }
 
 tasks.named('test') {
@@ -64,11 +70,10 @@ tasks.register('patchedJar', Zip) {
     archiveFileName = "Automagy-1.7.10-${project.version}.jar"
     destinationDirectory = layout.buildDirectory.dir('libs')
     from(zipTree('input/Automagy-1.7.10-0.28.2.jar')) {
-        exclude('tuhljin/automagy/entities/EntityAvaricePearl.class')
-        exclude('tuhljin/automagy/entities/EntityAvaricePearl$*.class')
+        patchedRoots.each { exclude(it + '.class'); exclude(it + '$*.class') }
     }
     from({ zipTree(tasks.named('reobfJar').get().archiveFile.get().asFile) }) {
-        include('tuhljin/automagy/entities/EntityAvaricePearl*.class')
+        include('**/*.class')
     }
     preserveFileTimestamps = false
     reproducibleFileOrder = true

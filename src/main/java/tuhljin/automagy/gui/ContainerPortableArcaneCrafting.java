@@ -28,6 +28,8 @@ public class ContainerPortableArcaneCrafting extends Container implements IRepor
     public boolean hasStorage = false;
     protected ItemStack storagestack = null;
     protected FakeTileMagicWorkbench fakeTile;
+    private final ItemStack boundWand;
+    private boolean closed;
 
     public ContainerPortableArcaneCrafting(EntityPlayer player, int wandSlot) {
         this.player = player;
@@ -35,6 +37,7 @@ public class ContainerPortableArcaneCrafting extends Container implements IRepor
         InventoryPlayer inventoryPlayer = player.inventory;
         int blockedSlot = -1;
         ItemStack wandstack = inventoryPlayer.getStackInSlot(wandSlot);
+        this.boundWand = wandstack;
         ItemFocusCrafting focus = ItemFocusCrafting.getCraftingFocusOnWand(wandstack);
         if (focus != null) {
             this.storagestack = ThaumcraftExtension.getWandFocusStack(wandstack);
@@ -103,12 +106,33 @@ public class ContainerPortableArcaneCrafting extends Container implements IRepor
 
     @Override
     public boolean canInteractWith(EntityPlayer player) {
+        if (this.closed || player != this.player) {
+            return false;
+        }
         ItemStack newStack = player.inventory.getStackInSlot(this.blockedSlotHotbarPos);
-        return ItemFocusCrafting.isWandWithCraftingFocus(newStack);
+        if (newStack == null || newStack != this.boundWand || !ItemFocusCrafting.isWandWithCraftingFocus(newStack)) {
+            return false;
+        }
+        ItemStack focus = ThaumcraftExtension.getWandFocusStack(newStack);
+        return focus != null && this.storagestack != null
+            && focus.getItem() == this.storagestack.getItem()
+            && focus.getTagCompound() == this.storagestack.getTagCompound();
     }
 
     @Override
     public ItemStack slotClick(int slot, int button, int modifiers, EntityPlayer par4EntityPlayer) {
+        if (this.closed || !this.canInteractWith(par4EntityPlayer)) {
+            return null;
+        }
+        // A number-key click also addresses a second slot in the player's hotbar.
+        if (modifiers == 2 && button == this.blockedSlotHotbarPos) {
+            return null;
+        }
+        boolean outsideClick = slot == -999 && (modifiers == 0 || modifiers == 1
+            || modifiers == 5 && getDragEvent(button) != 1);
+        if (slot < 0 && !outsideClick || slot >= this.inventorySlots.size()) {
+            return null;
+        }
         if (slot != this.blockedSlotID && slot != this.displayWandSlotID) {
             if (slot == 0) {
                 this.onCraftMatrixChanged(this.craftingInv);
@@ -118,7 +142,7 @@ public class ContainerPortableArcaneCrafting extends Container implements IRepor
                 int var5 = 1;
                 return super.slotClick(slot, var5, modifiers, par4EntityPlayer);
             } else {
-                if ((slot == 0 || slot == 1) && button > 0) {
+                if ((modifiers == 0 || modifiers == 1) && (slot == 0 || slot == 1) && button > 0) {
                     button = 0;
                 }
 
@@ -131,7 +155,14 @@ public class ContainerPortableArcaneCrafting extends Container implements IRepor
 
     @Override
     public boolean func_94530_a(ItemStack par1ItemStack, Slot par2Slot) {
-        return par2Slot.inventory != this.craftingInv && super.func_94530_a(par1ItemStack, par2Slot);
+        return par2Slot.slotNumber != this.blockedSlotID && par2Slot.inventory != this.craftingInv
+            && super.func_94530_a(par1ItemStack, par2Slot);
+    }
+
+    @Override
+    public boolean canDragIntoSlot(Slot slot) {
+        return slot.slotNumber != this.blockedSlotID && slot.slotNumber != this.displayWandSlotID
+            && super.canDragIntoSlot(slot);
     }
 
     @Override
@@ -177,6 +208,10 @@ public class ContainerPortableArcaneCrafting extends Container implements IRepor
 
     @Override
     public void onContainerClosed(EntityPlayer player) {
+        if (this.closed) {
+            return;
+        }
+        this.closed = true;
         super.onContainerClosed(player);
         if (!player.worldObj.isRemote) {
             if (this.hasStorage) {
@@ -187,6 +222,7 @@ public class ContainerPortableArcaneCrafting extends Container implements IRepor
                 for (int i = 0; i < 9; i++) {
                     ItemStack stack = this.craftingInv.getStackInSlot(i);
                     if (stack != null) {
+                        this.craftingInv.setInventorySlotContentsSoftly(i, null);
                         if (droppedItemsHover) {
                             EntityItemDelayedFall entityitem = EntityItemDelayedFall.toss(stack, player);
                             if (first) {
