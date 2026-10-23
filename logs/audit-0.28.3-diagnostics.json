@@ -1,0 +1,19 @@
+{
+  "reviewed_commit": "baddb27385182b9fd4fce7edac908cd46d2bec74",
+  "release": "v0.28.3",
+  "diagnostic_tests": 9,
+  "failures": 0,
+  "errors": 0,
+  "cases": [
+    "requestCountOverflowsIntoNegativeNumber",
+    "networkDirectionPersistsAndCrashesVisReaderTick",
+    "canceledItemSpawnIsReportedAsSuccessful",
+    "craftingHotkeyAcceptsFirstNonHotbarSlot",
+    "netherHeartTriesToIgniteWithoutCheckingDeniedEditRights",
+    "removingDestinationLeavesItsRequestsBehind",
+    "mirrorMovedIntoItsOwnInputIsAbandonedWhenContainerIsReplaced",
+    "mirrorCanBeMovedFromItsProtectedHotbarSlotWithNumberKey",
+    "inventariumRequestAcceptedWithoutGuiOrRangePermission"
+  ],
+  "scope": "Existing defect diagnostics using real mod and Minecraft/Forge methods with mocked world/player/context; no live game server or claim plugin; no repository source edits."
+}

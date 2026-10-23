@@ -26,12 +26,14 @@ public abstract class MappedItemsWithGroupedCounts<T> {
     }
 
     public void add(T group, ItemStack stack) {
+        if (stack == null || stack.getItem() == null || stack.stackSize <= 0) return;
         Map<T, Integer> submap = this.getSubmap(stack, true);
         Integer c = submap.get(group);
-        submap.put(group, (c == null ? 0 : c) + stack.stackSize);
+        submap.put(group, (int)Math.min(Integer.MAX_VALUE, (long)Math.max(0, c == null ? 0 : c) + stack.stackSize));
     }
 
     public int subtract(T group, HashableItemWithoutSize item, int amount) {
+        if (amount <= 0) return 0;
         int numRemoved = 0;
         Map<T, Integer> submap = this.map.get(item);
         if (submap != null) {
@@ -60,6 +62,7 @@ public abstract class MappedItemsWithGroupedCounts<T> {
     }
 
     public void subtractFromAnyGroup(ItemStack stack) {
+        if (stack == null || stack.getItem() == null || stack.stackSize <= 0) return;
         HashableItemWithoutSize item = new HashableItemWithoutSize(stack);
         Map<T, Integer> submap = this.map.get(item);
         if (submap != null) {
@@ -68,9 +71,13 @@ public abstract class MappedItemsWithGroupedCounts<T> {
 
             while (toRemove > 0 && iter.hasNext()) {
                 Entry<T, Integer> entry = iter.next();
-                T group = entry.getKey();
-                toRemove -= this.subtract(group, item, toRemove);
+                int removed = Math.min(toRemove, Math.max(0, entry.getValue()));
+                int remaining = entry.getValue() - removed;
+                if (remaining > 0) entry.setValue(remaining);
+                else iter.remove();
+                toRemove -= removed;
             }
+            if (submap.isEmpty()) this.map.remove(item);
         }
     }
 
@@ -87,8 +94,11 @@ public abstract class MappedItemsWithGroupedCounts<T> {
     }
 
     public void removeGroup(T group) {
-        if (this.map.containsKey(group)) {
-            this.map.remove(group);
+        Iterator<Map<T, Integer>> iter = this.map.values().iterator();
+        while (iter.hasNext()) {
+            Map<T, Integer> submap = iter.next();
+            submap.remove(group);
+            if (submap.isEmpty()) iter.remove();
         }
     }
 

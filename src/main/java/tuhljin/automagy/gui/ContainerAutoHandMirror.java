@@ -19,6 +19,7 @@ import tuhljin.automagy.items.ModItems;
 
 public class ContainerAutoHandMirror extends FilterContainer implements IReporteeForSlot {
     public final int blockedSlotID;
+    private boolean closed;
     private ItemStack modifyingStack = null;
     private GUIAutoHandMirror attachedGUI = null;
     private EntityPlayer player;
@@ -71,12 +72,26 @@ public class ContainerAutoHandMirror extends FilterContainer implements IReporte
 
     @Override
     public boolean canInteractWith(EntityPlayer player) {
-        return this.modifyingStack != null && ItemStack.areItemStacksEqual(this.modifyingStack, player.inventory.getStackInSlot(this.blockedSlotID));
+        return !this.closed && player == this.player && this.modifyingStack != null
+            && this.modifyingStack == player.inventory.getStackInSlot(this.blockedSlotID);
     }
 
     @Override
     public ItemStack slotClick(int slot, int par2, int par3, EntityPlayer par4EntityPlayer) {
+        if (!this.canInteractWith(par4EntityPlayer) || par3 == 2 && par2 == this.blockedSlotID) return null;
+        boolean outsideClick = slot == -999 && (par3 == 0 || par3 == 1 || par3 == 5 && getDragEvent(par2) != 1);
+        if (slot < 0 && !outsideClick || slot >= this.inventorySlots.size()) return null;
         return slot == this.blockedSlotID + 1 ? null : super.slotClick(slot, par2, par3, par4EntityPlayer);
+    }
+
+    @Override
+    public boolean canDragIntoSlot(Slot slot) {
+        return slot.slotNumber != this.blockedSlotID + 1 && super.canDragIntoSlot(slot);
+    }
+
+    @Override
+    public boolean func_94530_a(ItemStack stack, Slot slot) {
+        return slot.slotNumber != this.blockedSlotID + 1 && super.func_94530_a(stack, slot);
     }
 
     @Override
@@ -97,8 +112,10 @@ public class ContainerAutoHandMirror extends FilterContainer implements IReporte
 
     @Override
     public void onCraftMatrixChanged(IInventory inv) {
+        if (this.closed) return;
         if (this.input.getStackInSlot(0) != null && ItemStack.areItemStacksEqual(this.input.getStackInSlot(0), this.modifyingStack)) {
-            this.player.openContainer = this.player.inventoryContainer;
+            // Leave the input available for normal retrieval/close; never abandon a live container.
+            return;
         } else if (!this.worldObj.isRemote
             && this.input.getStackInSlot(0) != null
             && this.player != null
@@ -113,6 +130,8 @@ public class ContainerAutoHandMirror extends FilterContainer implements IReporte
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int slotNum) {
+        if (!this.canInteractWith(player) || slotNum < 0 || slotNum >= this.inventorySlots.size()
+            || slotNum == this.blockedSlotID + 1) return null;
         ItemStack stack = null;
         Slot slot = (Slot)this.inventorySlots.get(slotNum);
         if (slot != null) {
@@ -147,11 +166,14 @@ public class ContainerAutoHandMirror extends FilterContainer implements IReporte
 
     @Override
     public void onContainerClosed(EntityPlayer player) {
+        if (this.closed) return;
+        this.closed = true;
         super.onContainerClosed(player);
         if (!this.worldObj.isRemote) {
             for (int i = 0; i < 1; i++) {
                 ItemStack stack = this.input.getStackInSlotOnClosing(i);
                 if (stack != null) {
+                    this.input.setInventorySlotContents(i, null);
                     player.dropPlayerItemWithRandomChoice(stack, false);
                 }
             }
