@@ -1,0 +1,27 @@
+{
+  "baseline_commit": "0c9f34e4373a07219f669e1166e1a98672afe2b9",
+  "baseline": {
+    "tests": 8,
+    "failures": 5,
+    "errors": 0
+  },
+  "fixed": {
+    "tests": 8,
+    "failures": 0,
+    "errors": 0
+  },
+  "test_command": "mc-gradle test patchedJar",
+  "artifact": {
+    "file": "Automagy-1.7.10-0.28.2-pearl-fix.1.jar",
+    "sha256": "ba7bb4b661b0514bb0ac5bb3662012f7435df7d06f6a9cc7bf58cb6b4826e81d",
+    "classes": 439,
+    "unchanged_classes": 437,
+    "unchanged_resources": 241,
+    "changed_entries": [
+      "tuhljin/automagy/entities/EntityAvaricePearl$EntitySelectorItem.class",
+      "tuhljin/automagy/entities/EntityAvaricePearl.class"
+    ],
+    "srg_names_verified": true
+  },
+  "game_or_sigmarix_crucible_started": false
+}
