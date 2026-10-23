@@ -1,0 +1,221 @@
+{
+  "release": "0.28.5",
+  "previous_release_commit": "faab2c42ddfeb150bd4624b4a20758e48bc85ecd",
+  "tests": 88,
+  "failures": 0,
+  "errors": 0,
+  "previous_regression_tests": 65,
+  "catalog_checks": 12,
+  "additional_lifecycle_checks": 11,
+  "artifact": {
+    "file": "Automagy-1.7.10-0.28.5.jar",
+    "sha256": "71c32b5454c222a16e5a0220353f5af36e1cb0b3923e80d8bb17004a7dc1bd3c",
+    "original_sha256": "4c1d78e0adee1754675d93ffbadc8c9fe205710cb77538b953e57810f9528efc",
+    "classes": 439,
+    "unchanged_classes": 421,
+    "unchanged_resources": 241,
+    "changed_entries": [
+      "tuhljin/automagy/blocks/BlockMirrorMultiDest.class",
+      "tuhljin/automagy/blocks/BlockThaumostaticRefuelerSpire.class",
+      "tuhljin/automagy/entities/EntityAvaricePearl$EntitySelectorItem.class",
+      "tuhljin/automagy/entities/EntityAvaricePearl.class",
+      "tuhljin/automagy/entities/EntityItemDelayedFall.class",
+      "tuhljin/automagy/gui/ContainerAutoHandMirror.class",
+      "tuhljin/automagy/gui/ContainerPortableArcaneCrafting.class",
+      "tuhljin/automagy/gui/FakeTileMagicWorkbench.class",
+      "tuhljin/automagy/items/ItemBucketCustom.class",
+      "tuhljin/automagy/items/ItemNetherHeart.class",
+      "tuhljin/automagy/lib/inventory/MappedItemsOrderedByTimeAdded.class",
+      "tuhljin/automagy/lib/inventory/MappedItemsWithGroupedCounts.class",
+      "tuhljin/automagy/lib/inventory/MirrorspaceItems.class",
+      "tuhljin/automagy/network/MessageGUIInventariumRequest.class",
+      "tuhljin/automagy/network/MessageKeyPressed.class",
+      "tuhljin/automagy/tiles/TileEntityEssentiaLocus.class",
+      "tuhljin/automagy/tiles/TileEntityMirrorMultiDest.class",
+      "tuhljin/automagy/tiles/TileEntityVisReader.class"
+    ],
+    "java_class_version": 52,
+    "srg_names_verified": true,
+    "server_dispenser_constructor_present": true,
+    "external_dreamcraft_dependency": false
+  },
+  "changed_since_0.28.4": [
+    "tuhljin/automagy/blocks/BlockThaumostaticRefuelerSpire.class",
+    "tuhljin/automagy/tiles/TileEntityEssentiaLocus.class"
+  ],
+  "baseline_0.28.4": [
+    {
+      "suite": "tuhljin.automagy.catalog.CatalogVerificationTest",
+      "tests": 12,
+      "failures": 2,
+      "failed_cases": [
+        {
+          "name": "catalog514_movedUpperHalvesCannotCreateIngots",
+          "message": "java.lang.AssertionError: Two zero-drop upper halves must not refund a base expected:<0> but was:<9>"
+        },
+        {
+          "name": "catalog664_orphanLocusCannotDropOrRemoveForeignBlocks",
+          "message": "java.lang.AssertionError: expected:<1> but was:<0>"
+        }
+      ]
+    }
+  ],
+  "suites": [
+    {
+      "suite": "tuhljin.automagy.catalog.CatalogVerificationTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "cases": [
+        "catalog563_hopperConsumptionDuringPearlQueryStillConserves64Items",
+        "catalog710_extractBeforeSwitchAlsoConservesBothStoragesAndCursor",
+        "catalog142_fourRealHoppersAndSixteenPearlsConserve64Items",
+        "catalog514_movedUpperHalvesCannotCreateIngots",
+        "catalog710_openingNextContainerBeforeClosingPreviousDoesNotCopyContents",
+        "catalog563_dispenserHopperAndPearlsConserve64TaggedItems",
+        "catalog514_controlOrdinaryUpperBreakReturnsExactlyNineIngots",
+        "catalog710_twentyBidirectionalSwitchesKeepAClosedBalance",
+        "catalog514_controlOrdinaryLowerBreakDoesNotDoubleRefund",
+        "catalog710_switchBeforeClickCannotDuplicateStoredStack",
+        "catalog664_orphanLocusCannotDropOrRemoveForeignBlocks",
+        "catalog710_halfStackOnCursorSurvivesSwitchAndTransferToTheOtherFocus"
+      ]
+    },
+    {
+      "suite": "tuhljin.automagy.catalog.MultiblockLifecycleTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "cases": [
+        "clientSpireCallbackDoesNotRemoveCompanion",
+        "cachedForeignBlockIsNeverUsedForLocusDrops",
+        "failedRemovalRetainsEyesAndRetriesWithoutDropping",
+        "repeatedUpperCallbackCannotRefundRemovedBaseTwice",
+        "spireDoesNotRefundWhenBaseRemovalFails",
+        "invalidStructureReturnsBlockAndStoredEyesExactlyOnce",
+        "orphanIsStoppedImmediatelyAndReplacementTileIsPreserved",
+        "spireDoesNotRemoveAnotherBaseAboveIt",
+        "validStructureKeepsUpdatingWithoutDismantling",
+        "registeredTileAtForeignBlockCannotRemoveIt",
+        "invalidatedTileDoesNotTickEvenIfStillRegistered"
+      ]
+    },
+    {
+      "suite": "tuhljin.automagy.entities.ArchivedServerFixTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "cases": [
+        "expiredHoverItemCannotRespawnAfterItsStackWasCollected",
+        "dispenserConstructorSurvivesActualServerSideTransformer"
+      ]
+    },
+    {
+      "suite": "tuhljin.automagy.entities.EntityAvaricePearlTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "cases": [
+        "partialHopperPickupKeepsOnlyLiveRemainderAndNbt",
+        "ongoingMiserPearlRechecksConsumedSnapshot",
+        "impactStillTransportsLiveItemsWithoutChangingTheirStack",
+        "emptyStacksAndNonItemsAreRejected",
+        "ongoingMiserPearlStillStopsAtTenStacks",
+        "hopperConsumedStackIsNotAvailableToPearl",
+        "impactRechecksItemsConsumedAfterQuery",
+        "multiplePearlsCannotReuseHopperConsumedEntity"
+      ]
+    },
+    {
+      "suite": "tuhljin.automagy.gui.PortableCraftingTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "cases": [
+        "focusRightClickStillOpensCraftingGui",
+        "resultNumberKeyKeepsRequestedHotbarIndex",
+        "otherNumberKeysStillSwapItems",
+        "replacingWandClosesItsOldSession",
+        "replacingFocusClosesItsOldStorageSession",
+        "storageClosePreservesCountMetadataAndNbt",
+        "numberKeyCannotMoveTheBoundWand",
+        "readOnlyWandCannotReceiveDragDistribution",
+        "fakeWorkbenchKeepsTheProvidedWorld",
+        "malformedClickCannotIndexOutsideTheContainer",
+        "closingTwiceReturnsMaterialsOnlyOnce"
+      ]
+    },
+    {
+      "suite": "tuhljin.automagy.items.BucketProtectionTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "cases": [
+        "spawnProtectedTargetIsNotChanged",
+        "deniedBreakPreventsReplacingAPlant",
+        "clientDoesNotChangeBlocksOrFireServerProtectionEvents",
+        "canceledPlacementRestoresTheOriginalBlock",
+        "permittedPlacementStillWorks",
+        "failingPlacementKeepsTheFilledBucket",
+        "canceledBucketEventKeepsWorldAndBucket",
+        "throwingProtectionListenerRollsBackWithoutDrops"
+      ]
+    },
+    {
+      "suite": "tuhljin.automagy.items.NetherHeartProtectionTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "cases": [
+        "deniedTickDoesNotRetryHundredsOfProtectedPlacements",
+        "permittedFireStillAppearsAndNotifiesTheWorld",
+        "clientAndNestedTransactionsDoNotModifyTheWorld",
+        "deferredFireInitializationIsCapturedBeforeTheProtectionEvent",
+        "canceledPlacementRestoresAirAndTransactionFlags",
+        "deniedSecondaryPositionRollsBackTheWholeChange",
+        "failedPlacementDoesNotReportSuccess",
+        "canceledMultiPlacementRestoresEveryCapturedBlock",
+        "throwingProtectionListenerRollsBackAndRestoresFlags",
+        "deniedSpawnAndEditPermissionsPreventIgnition",
+        "permittedMultiPlacementKeepsAllCapturedBlocks"
+      ]
+    },
+    {
+      "suite": "tuhljin.automagy.regression.AuditRegressionTest",
+      "tests": 25,
+      "failures": 0,
+      "errors": 0,
+      "cases": [
+        "validCancellationStillReachesTheCore",
+        "multiDestinationMirrorPersistsRejectedSpillInsteadOfDiscardingIt",
+        "permittedSpawnIsReportedAsSuccessful",
+        "overflowingRequestDoesNotPartiallyChangeDestinationAccounting",
+        "persistedInvalidReaderSettingsAreRepaired",
+        "movingMirrorIntoItsOwnInputIsBlocked",
+        "invalidNetworkDirectionIsIgnoredAndDoesNotCrashTheTick",
+        "unusableOrReadOnlyBookCannotChangeRequests",
+        "otherMirrorNumberKeysAndUnprotectedDragSlotsStillWork",
+        "unexpectedSelfInputIsReturnedByNormalCloseExactlyOnce",
+        "craftingHotkeyAcceptsOnlyHotbarSlotsButStillOpensValidFocus",
+        "permittedMirrorSpillDoesNotCreateAPendingCopy",
+        "replacingMirrorInvalidatesItsSession",
+        "inventariumRejectsRequestWithoutAnOpenBook",
+        "mirrorCannotBeMovedByItsNumberKeyOrDirectShiftTransfer",
+        "bookCannotAddressAnotherCoreOrAnotherRequester",
+        "cancellingAcrossSeveralDestinationsDoesNotInvalidateIterator",
+        "unloadedCoreIsNotResolvedByTheRequestHandler",
+        "canceledSpawnKeepsTheMirrorBufferAndItsNbt",
+        "invalidRequestCountsAndItemsAreRejected",
+        "requestCountsSaturateAndCanStillBeCancelledAndSaved",
+        "groupedCountsDoNotOverflow",
+        "validBookStillRequestsFromItsRemoteCoreAndOwnDestination",
+        "removingDestinationRemovesOnlyItsRequestsAcrossAllItems",
+        "validReaderSettingsStillWork"
+      ]
+    }
+  ],
+  "limitations": [
+    "Headless JVM: real mod and Minecraft/Forge classes; mocked world storage and lifecycle callbacks.",
+    "Witchery moving-earth ritual, Thaumic Tinkerer dislocation and a live server were not run."
+  ]
+}

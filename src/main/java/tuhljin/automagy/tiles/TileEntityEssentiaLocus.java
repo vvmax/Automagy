@@ -49,6 +49,7 @@ public class TileEntityEssentiaLocus extends ModTileEntity implements IAspectCon
     private int ticksSinceJarsUpdate = this.jarsUpdateFrequency;
     public static int VALIDITY_CHECK_FREQUENCY = 60;
     private int ticksSinceValidityCheck;
+    private boolean dismantling;
     public int ticksToAnim = 0;
     private Object beam = null;
     protected HashSet<BlockCoord> jars = new HashSet<>();
@@ -124,12 +125,30 @@ public class TileEntityEssentiaLocus extends ModTileEntity implements IAspectCon
 
     @Override
     public void updateEntity() {
+        if (this.isInvalid() || this.dismantling) {
+            return;
+        }
         if (!this.worldObj.isRemote) {
+            // Moving mods may leave an old instance in the ticking list. It no longer owns this position.
+            if (this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) != this
+                || this.worldObj.getBlock(this.xCoord, this.yCoord, this.zCoord) != ModBlocks.essentiaLocus) {
+                this.invalidate();
+                return;
+            }
             if (this.ticksSinceValidityCheck >= VALIDITY_CHECK_FREQUENCY) {
                 this.ticksSinceValidityCheck = 0;
                 if (!checkValidity(this.worldObj, this.xCoord, this.yCoord, this.zCoord, false)) {
-                    this.getBlockType().dropBlockAsItem(this.worldObj, this.xCoord, this.yCoord, this.zCoord, 0, 0);
-                    this.worldObj.setBlockToAir(this.xCoord, this.yCoord, this.zCoord);
+                    this.dismantling = true;
+                    try {
+                        int metadata = this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord);
+                        // Let breakBlock return the eyes before invalidating this tile. Never drop a cached foreign block.
+                        if (this.worldObj.setBlockToAir(this.xCoord, this.yCoord, this.zCoord)) {
+                            this.invalidate();
+                            ModBlocks.essentiaLocus.dropBlockAsItem(this.worldObj, this.xCoord, this.yCoord, this.zCoord, metadata, 0);
+                        }
+                    } finally {
+                        this.dismantling = false;
+                    }
                     return;
                 }
 

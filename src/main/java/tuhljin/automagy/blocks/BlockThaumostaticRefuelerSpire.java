@@ -67,16 +67,15 @@ public class BlockThaumostaticRefuelerSpire extends ModBlockSpecialRender {
 
     @Override
     public void breakBlock(World world, int x, int y, int z, Block block, int metadata) {
-        if (metadata == 1) {
+        if (!world.isRemote && metadata == 1) {
             Block b = world.getBlock(x, y - 1, z);
-            if (b == ModBlocks.thaumostaticSpire) {
-                if (!world.isRemote) {
-                    b.dropBlockAsItem(world, x, y - 1, z, 0, 0);
-                }
-
-                world.setBlockToAir(x, y - 1, z);
+            // A relocated upper half has no material value. Only its real base may refund ingots.
+            if (b == ModBlocks.thaumostaticSpire && world.getBlockMetadata(x, y - 1, z) == 0
+                && world.setBlockToAir(x, y - 1, z)) {
+                b.dropBlockAsItem(world, x, y - 1, z, 0, 0);
             }
-        } else if (metadata == 0 && world.getBlock(x, y + 1, z) == ModBlocks.thaumostaticSpire) {
+        } else if (!world.isRemote && metadata == 0 && world.getBlock(x, y + 1, z) == ModBlocks.thaumostaticSpire
+            && world.getBlockMetadata(x, y + 1, z) == 1) {
             world.setBlockToAir(x, y + 1, z);
         }
 

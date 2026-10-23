@@ -9,7 +9,7 @@ from verify import class_info
 
 root = Path(__file__).resolve().parent.parent
 original = root / 'input/Automagy-1.7.10-0.28.2.jar'
-patched = root / 'build/libs/Automagy-1.7.10-0.28.4.jar'
+patched = root / 'build/libs/Automagy-1.7.10-0.28.5.jar'
 expected = {
     'entities/EntityAvaricePearl',
     'entities/EntityAvaricePearl$EntitySelectorItem',
@@ -27,6 +27,8 @@ expected = {
     'lib/inventory/MirrorspaceItems',
     'lib/inventory/MappedItemsOrderedByTimeAdded',
     'lib/inventory/MappedItemsWithGroupedCounts',
+    'blocks/BlockThaumostaticRefuelerSpire',
+    'tiles/TileEntityEssentiaLocus',
 }
 expected = {'tuhljin/automagy/' + name + '.class' for name in expected}
 manifest = json.loads((root / 'provenance.json').read_text())
@@ -58,6 +60,13 @@ with zipfile.ZipFile(original) as before, zipfile.ZipFile(patched) as after:
     assert b'onPlayerMultiBlockPlace' in heart and b'onPlayerBlockPlace' in heart
     request = after.read(prefix + 'network/MessageGUIInventariumRequest.class')
     assert b'ContainerScribe' in request and b'canRequestItems' in request and b'getRequesterCoord' in request
+    refs, declarations, _, _ = class_info(after.read(prefix + 'tiles/TileEntityEssentiaLocus.class'))
+    assert 'func_145845_h' in {name for _, _, name, _ in declarations}
+    assert {'func_145837_r', 'func_145843_s', 'func_147438_o', 'func_147439_a', 'func_147468_f'} <= {name for name, _ in refs}
+    assert 'func_145838_q' not in {name for name, _ in refs}, 'Locus must not drop a cached block type'
+    refs, declarations, _, _ = class_info(after.read(prefix + 'blocks/BlockThaumostaticRefuelerSpire.class'))
+    assert 'func_149749_a' in {name for _, _, name, _ in declarations}
+    assert {'func_72805_g', 'func_147468_f'} <= {name for name, _ in refs}
     for name in changed:
         assert b'dreamcraft' not in after.read(name), name
     classes = sum(name.endswith('.class') for name in entries)
